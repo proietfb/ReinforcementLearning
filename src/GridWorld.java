@@ -45,6 +45,23 @@ public class GridWorld {
         }
         return gridW;
     }
+    public int[][] fillGridWorldNodes(int x, int y, Node node){
+        while(true) {
+            if (gridW[x][y] == FREE_CELL) {
+                gridW[x][y] = NODE_CELL;
+                break;
+            }
+            else {
+                x = (int) (0+Math.random()*(xGrid-1));
+                y = (int) (0+Math.random()*(yGrid-1));
+                node.setPositionNodeX(x);
+                node.setPositionNodeY(y);
+            }
+
+        }
+        return gridW;
+    }
+
 
     public int[][] getGridW() {
         return gridW;

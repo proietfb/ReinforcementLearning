@@ -5,10 +5,7 @@ public class Node {
 
     int positionNodeX, positionNodeY;
 
-    public Node(int positionNodeX, int positionNodeY) {
-        this.positionNodeX = positionNodeX;
-        this.positionNodeY = positionNodeY;
-    }
+    public Node() {}
 
     public int getPositionNodeX() {
         return positionNodeX;

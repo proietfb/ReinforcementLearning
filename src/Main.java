@@ -5,19 +5,23 @@ import java.util.Arrays;
  */
 public class Main {
 
+
     public Main() {
     }
 
     public static void main(String[] args) {
         int x = 10, y=10;
         GridWorld newWorld = new GridWorld(x,y);
-        Agent agent0 = new Agent();
-        Agent agent1 = new Agent();
+        Agent agent0 = new Agent(x,y);
+        Node node0 = new Node();
 
         newWorld.defineWorld();
         agent0.setStartPositionAgentX((int) (0+Math.random()*(x-1)));
         agent0.setStartPositionAgentY((int) (0+Math.random()*(y-1)));
+        node0.setPositionNodeX((int) (0+Math.random()*(x-1)));
+        node0.setPositionNodeY((int) (0+Math.random()*(y-1)));
 
+        newWorld.fillGridWorldNodes(node0.getPositionNodeX(),node0.getPositionNodeY(),node0);
         newWorld.fillGridWorldAgents(agent0.getStartPositionAgentX(),agent0.getStartPositionAgentY(), agent0);
 
 
