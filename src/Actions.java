@@ -1,10 +1,24 @@
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by proietfb on 7/13/16.
  */
 public class Actions {
 
-    public Actions() {
+    public static final int N_ACTIONS = 6;
 
+    //Array<Actions> actions;
+
+    public Actions() {
+        //actions = new Array<>();
+    }
+
+    public void possibleActions(Agent agent){
+        if (agent.getCurrentPositionX() == 0){
+
+        }
     }
 
     public void moveUp(Agent agent){

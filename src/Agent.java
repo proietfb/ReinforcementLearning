@@ -9,13 +9,23 @@ public class Agent {
 
     int startPositionAgentX, startPositionAgentY;
     int currentPositionX, currentPositionY;
-    int signalPower = maxSignal;
+    int currentState;
+    int signalPower;
+    int nNeighbourDiscovered;
+    int nGoalDiscovered;
 
     public Agent(int dimGridX, int dimGridY) {
         this.dimGridX = dimGridX;
         this.dimGridY = dimGridY;
         currentPositionX = startPositionAgentX;
         currentPositionY = startPositionAgentY;
+        nNeighbourDiscovered = 0;
+        nGoalDiscovered = 0;
+    }
+
+    public int currentState(GridWorld gridWorld){
+        currentState = gridWorld.getGridValues()[currentPositionX][currentPositionY];
+        return currentState;
     }
 
     public int getDimGridX() {
@@ -46,6 +56,18 @@ public class Agent {
         return currentPositionY;
     }
 
+    public int getCurrentState() {
+        return currentState;
+    }
+
+    public int getnNeighbourDiscovered() {
+        return nNeighbourDiscovered;
+    }
+
+    public int getnGoalDiscovered() {
+        return nGoalDiscovered;
+    }
+
     public void setStartPositionAgentX(int startPositionAgentX) {
         this.startPositionAgentX = startPositionAgentX;
     }
@@ -66,5 +88,15 @@ public class Agent {
         this.signalPower = signalPower;
     }
 
+    public void setCurrentState(int currentState) {
+        this.currentState = currentState;
+    }
 
+    public void setnNeighbourDiscovered(int nNeighbourDiscovered) {
+        this.nNeighbourDiscovered = nNeighbourDiscovered;
+    }
+
+    public void setnGoalDiscovered(int nGoalDiscovered) {
+        this.nGoalDiscovered = nGoalDiscovered;
+    }
 }

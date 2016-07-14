@@ -12,13 +12,14 @@ public class GridWorld {
 
     int xGrid,yGrid;
 
-    int[][] gridW;
+    int[][] gridW, gridValues;
 
 
     public GridWorld(int xGrid, int yGrid) {
         this.xGrid = xGrid;
         this.yGrid = yGrid;
         gridW = new int[this.xGrid][this.yGrid];
+        gridValues = new int[this.xGrid][this.yGrid];
     }
 
     public int[][] defineWorld(){
@@ -27,6 +28,19 @@ public class GridWorld {
             Arrays.fill( i,FREE_CELL );
         }
         return gridW;
+    }
+
+    public int[][] defineGridValues(){ //assegno un valore ad ogni cella della griglia
+
+        for (int i = 0; i< gridValues.length; i++){
+            for(int j = 0; j< gridValues[0].length; j++){
+                if (i > 0)
+                    gridValues[i][j] = xGrid+(gridValues[i-1][0])+j;
+                else
+                    gridValues[i][j] = i+j;
+            }
+        }
+        return gridValues;
     }
 
     public int[][] fillGridWorldAgents(int x, int y, Agent agent){
@@ -65,6 +79,10 @@ public class GridWorld {
 
     public int[][] getGridW() {
         return gridW;
+    }
+
+    public int[][] getGridValues() {
+        return gridValues;
     }
 
     public int getxGrid() {
