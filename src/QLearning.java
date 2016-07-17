@@ -1,12 +1,22 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * Created by proietfb on 7/13/16.
  */
 public class QLearning {
 
+    int statesCount;
+    double alpha = 0.1;
+    double gamma = 0.9;
+
     public int[][] R;
+    public double[][] Q;
 
     public QLearning(Agent agent) {
-        R = new int[(int) Math.pow(agent.getDimGridX(),2)][(int) Math.pow(agent.getDimGridY(),2)];
+        statesCount = agent.getDimGridX()*agent.getDimGridY();
+        R = new int[statesCount][statesCount];
+        Q = new double[statesCount][statesCount];
     }
 
     public void initRewardValues(Agent agent,Node node, GridWorld gridWorld){ //definisce i reward massimi di base nelle posizioni accanto al goal
@@ -29,6 +39,27 @@ public class QLearning {
 
     }
 
+    private void defineQ(){
+        for (double[] i:Q) {
+            Arrays.fill( i,0);
+        }
+    }
+
+    private double maxQ(Agent agent, States state){
+        double maxVal = Double.MIN_VALUE;
+        for (int i = 0; i < state.definePossibleStates.get(agent.getCurrentState()).size(); i++){
+            int nextState = state.definePossibleStates.get(agent.getCurrentState()).get(i);
+            double value = Q[agent.getCurrentState()][nextState];
+            if (value >= maxVal)
+                maxVal = value;
+        }
+        return maxVal;
+    }
+
+    public int getStatesCount() {
+        return statesCount;
+    }
+
     public int[][] getR() {
         return R;
     }
@@ -36,4 +67,6 @@ public class QLearning {
     public void setR(int[][] r) {
         R = r;
     }
+
+
 }
