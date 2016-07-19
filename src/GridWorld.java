@@ -93,4 +93,7 @@ public class GridWorld {
         return yGrid;
     }
 
+    public void setGridW(int[][] gridW) {
+        this.gridW = gridW;
+    }
 }

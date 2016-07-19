@@ -9,42 +9,48 @@ public class Actions {
 
     public static final int N_ACTIONS = 6;
 
-    //Array<Actions> actions;
 
     public Actions() {
-        //actions = new Array<>();
-    }
-
-    public void possibleActions(Agent agent){
-        if (agent.getCurrentPositionX() == 0){
-
-        }
-    }
-
-    public void moveUp(Agent agent){
-
-        if(agent.getCurrentPositionX() != 0)
-            agent.setCurrentPositionX(agent.getCurrentPositionX()-1);
 
     }
 
-    public void moveDown(Agent agent){
-
-        if(agent.getCurrentPositionX() != (agent.getDimGridX()-1))
-            agent.setCurrentPositionX(agent.getCurrentPositionX()+1);
-
+    public void possibleActionsFromState(Agent agent, int step, GridWorld gridWorld){
+        if (agent.getCurrentState() == agent.previousStates.get(step-1) + 1) //mossa a dx
+            moveRight(agent, gridWorld);
+        else if (agent.getCurrentState() == agent.previousStates.get(step-1) - 1) // mossa a sx
+            moveLeft(agent, gridWorld);
+        else if (agent.getCurrentState() == agent.previousStates.get(step-1) + agent.getDimGridX()) //in basso
+            moveDown(agent, gridWorld);
+        else
+            moveUp(agent, gridWorld);
     }
 
-    public void moveRight(Agent agent){
-
-        if(agent.getCurrentPositionY() != (agent.getDimGridY()-1))
-            agent.setCurrentPositionY(agent.getCurrentPositionY()+1);
+    public void moveUp(Agent agent, GridWorld gridWorld){
+        gridWorld.gridW[agent.getCurrentPositionX()][agent.getCurrentPositionY()] = GridWorld.FREE_CELL;
+        agent.setCurrentPositionX(agent.getCurrentPositionX()-1);
+        gridWorld.gridW[agent.getCurrentPositionX()][agent.getCurrentPositionY()] = GridWorld.AGENT_CELL;
     }
 
-    public void moveLeft(Agent agent){
+    public void moveDown(Agent agent, GridWorld gridWorld){
 
-        if(agent.getCurrentPositionY() != 0)
-            agent.setCurrentPositionY(agent.getCurrentPositionY()-1);
+        gridWorld.gridW[agent.getCurrentPositionX()][agent.getCurrentPositionY()] = GridWorld.FREE_CELL;
+        agent.setCurrentPositionX(agent.getCurrentPositionX()+1);
+        gridWorld.gridW[agent.getCurrentPositionX()][agent.getCurrentPositionY()] = GridWorld.AGENT_CELL;
+    }
+
+    public void moveRight(Agent agent, GridWorld gridWorld){
+
+        gridWorld.gridW[agent.getCurrentPositionX()][agent.getCurrentPositionY()] = GridWorld.FREE_CELL;
+        agent.setCurrentPositionY(agent.getCurrentPositionY()+1);
+        gridWorld.gridW[agent.getCurrentPositionX()][agent.getCurrentPositionY()] = GridWorld.AGENT_CELL;
+    }
+
+    public void moveLeft(Agent agent, GridWorld gridWorld){
+
+        gridWorld.gridW[agent.getCurrentPositionX()][agent.getCurrentPositionY()] = GridWorld.FREE_CELL;
+        agent.setCurrentPositionY(agent.getCurrentPositionY()-1);
+        gridWorld.gridW[agent.getCurrentPositionX()][agent.getCurrentPositionY()] = GridWorld.AGENT_CELL;
+
     }
 
     public void actionIncrementSignal(Agent agent){

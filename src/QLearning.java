@@ -27,7 +27,7 @@ public class QLearning {
     private void initRewardValues(Agent agent,Node node, GridWorld gridWorld){ //definisce i reward massimi di base nelle posizioni accanto al goal
 
         for (int[] i:R) //inizializzo la matrice dei reward tutti a zero
-            Arrays.fill(i,0);
+            Arrays.fill(i,1);
 
         if(node.getPositionNodeX() == 0)
             R[gridWorld.getGridValues()[node.getPositionNodeX()][node.getPositionNodeY()]][gridWorld.getGridValues()[node.getPositionNodeX()+1][node.getPositionNodeY()]] = 100;
@@ -79,15 +79,18 @@ public class QLearning {
         return policyGoToState;
     }
 
-    public void run(Agent agent, States states, Node node){
+    public void run(Agent agent, States states, Node node,GridWorld gridWorld){
         Random ran = new Random();
 
-        for (int i = 0; i< 10; i++){
-            System.out.println("run" + i);
+        for (int i = 0; i< 1000; i++){
+            agent.previousStates.clear();
+            agent.setCurrentState(agent.getStartState());
+
+            //System.out.println("run" + i);
             int state = agent.getCurrentState();
-            int[] actionsFromState = new int[states.definePossibleStates.get(state).size()];
-            listToArray(actionsFromState, states, state);
-            while (state != node.nodeCurrentState){
+            while (state != node.getNodeCurrentState()){
+                int[] actionsFromState = new int[states.definePossibleStates.get(state).size()];
+                listToArray(actionsFromState, states, state);
                 int index = ran.nextInt(actionsFromState.length);
                 int action = actionsFromState[index];
                 int nextState = action;
@@ -97,8 +100,17 @@ public class QLearning {
                 double value = q + alpha*(r+gamma*maxQ -q);
                 setQ(state,action,value);
                 state = nextState;
-                System.out.println( "state" + state);
+                agent.setCurrentState(state);
+                agent.previousStates.add(agent.getCurrentState());
+                //System.out.println( "state: " + state);
             }
+
+            agent.setStartPositionAgentX((int) (0+Math.random()*(gridWorld.getxGrid()-1)));
+            agent.setStartPositionAgentY((int) (0+Math.random()*(gridWorld.getyGrid()-1)));
+            agent.setStartState(gridWorld.getGridValues()[agent.getStartPositionAgentX()][agent.getStartPositionAgentY()]);
+            agent.setCurrentState(agent.getStartState());
+            //printResult(agent);
+
         }
 
     }

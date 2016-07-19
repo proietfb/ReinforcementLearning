@@ -5,7 +5,11 @@ public class Node {
 
     int positionNodeX, positionNodeY;
 
-    public Node() {}
+    int nodeCurrentState;
+
+    public Node(GridWorld gridWorld) {
+        nodeCurrentState = gridWorld.defineGridValues()[positionNodeX][positionNodeY];
+    }
 
     public int getPositionNodeX() {
         return positionNodeX;
@@ -21,5 +25,13 @@ public class Node {
 
     public void setPositionNodeY(int positionNodeY) {
         this.positionNodeY = positionNodeY;
+    }
+
+    public int getNodeCurrentState() {
+        return nodeCurrentState;
+    }
+
+    public void setNodeCurrentState(int nodeCurrentState) {
+        this.nodeCurrentState = nodeCurrentState;
     }
 }
