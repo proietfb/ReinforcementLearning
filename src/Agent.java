@@ -25,13 +25,13 @@ public class Agent {
         nGoalDiscovered = 0;
     }
 
-    public int currentState(GridWorld gridWorld){
-        startState =gridWorld.getGridValues()[getStartPositionAgentX()][getStartPositionAgentY()];
+    public int currentState(GridWorld gridWorld) {
+        startState = gridWorld.getGridValues()[getStartPositionAgentX()][getStartPositionAgentY()];
         currentState = gridWorld.getGridValues()[currentPositionX][currentPositionY];
         return currentState;
     }
 
-    public ArrayList<Integer> listOfMoves (GridWorld gridWorld){
+    public ArrayList<Integer> listOfMoves(GridWorld gridWorld) {
 
         previousStates.add(currentState);
         return previousStates;
@@ -117,7 +117,6 @@ public class Agent {
         this.currentState = currentState;
 
     }
-
 
 
     public void setnNeighbourDiscovered(int nNeighbourDiscovered) {

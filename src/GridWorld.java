@@ -10,7 +10,7 @@ public class GridWorld {
     public static final int NODE_CELL = 2;
     public static final int AGENT_CELL = 3;
 
-    int xGrid,yGrid;
+    int xGrid, yGrid;
 
     int[][] gridW, gridValues;
 
@@ -22,36 +22,35 @@ public class GridWorld {
         gridValues = new int[this.xGrid][this.yGrid];
     }
 
-    public int[][] defineWorld(){
+    public int[][] defineWorld() {
 
-        for (int[] i:gridW) {
-            Arrays.fill( i,FREE_CELL );
+        for (int[] i : gridW) {
+            Arrays.fill(i, FREE_CELL);
         }
         return gridW;
     }
 
-    public int[][] defineGridValues(){ //assegno un valore ad ogni cella della griglia
+    public int[][] defineGridValues() { //assegno un valore ad ogni cella della griglia
 
-        for (int i = 0; i< gridValues.length; i++){
-            for(int j = 0; j< gridValues[0].length; j++){
+        for (int i = 0; i < gridValues.length; i++) {
+            for (int j = 0; j < gridValues[0].length; j++) {
                 if (i > 0)
-                    gridValues[i][j] = xGrid+(gridValues[i-1][0])+j;
+                    gridValues[i][j] = xGrid + (gridValues[i - 1][0]) + j;
                 else
-                    gridValues[i][j] = i+j;
+                    gridValues[i][j] = i + j;
             }
         }
         return gridValues;
     }
 
-    public int[][] fillGridWorldAgents(int x, int y, Agent agent){
-        while(true) {
+    public int[][] fillGridWorldAgents(int x, int y, Agent agent) {
+        while (true) {
             if (gridW[x][y] == FREE_CELL) {
                 gridW[x][y] = AGENT_CELL;
                 break;
-            }
-            else {
-                x = (int) (0+Math.random()*(xGrid-1));
-                y = (int) (0+Math.random()*(yGrid-1));
+            } else {
+                x = (int) (0 + Math.random() * (xGrid - 1));
+                y = (int) (0 + Math.random() * (yGrid - 1));
                 agent.setStartPositionAgentX(x);
                 agent.setStartPositionAgentY(y);
             }
@@ -59,15 +58,15 @@ public class GridWorld {
         }
         return gridW;
     }
-    public int[][] fillGridWorldNodes(int x, int y, Node node){
-        while(true) {
+
+    public int[][] fillGridWorldNodes(int x, int y, Node node) {
+        while (true) {
             if (gridW[x][y] == FREE_CELL) {
                 gridW[x][y] = NODE_CELL;
                 break;
-            }
-            else {
-                x = (int) (0+Math.random()*(xGrid-1));
-                y = (int) (0+Math.random()*(yGrid-1));
+            } else {
+                x = (int) (0 + Math.random() * (xGrid - 1));
+                y = (int) (0 + Math.random() * (yGrid - 1));
                 node.setPositionNodeX(x);
                 node.setPositionNodeY(y);
             }
