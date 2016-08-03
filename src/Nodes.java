@@ -1,14 +1,13 @@
 /**
  * Created by proietfb on 7/13/16.
  */
-public class Node {
+public class Nodes {
 
     int positionNodeX, positionNodeY;
 
     int nodeCurrentState;
 
-    public Node(GridWorld gridWorld) {
-        nodeCurrentState = gridWorld.defineGridValues()[positionNodeX][positionNodeY];
+    public Nodes() {
     }
 
     public int getPositionNodeX() {

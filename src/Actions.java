@@ -1,7 +1,3 @@
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by proietfb on 7/13/16.
  */
@@ -14,7 +10,7 @@ public class Actions {
 
     }
 
-    public void possibleActionsFromState(Agent agent, int step, GridWorld gridWorld) {
+    public void possibleActionsFromState(Agents agent, int step, GridWorld gridWorld) {
         if (agent.getCurrentState() == agent.previousStates.get(step - 1) + 1) //mossa a dx
             moveRight(agent, gridWorld);
         else if (agent.getCurrentState() == agent.previousStates.get(step - 1) - 1) // mossa a sx
@@ -25,27 +21,27 @@ public class Actions {
             moveUp(agent, gridWorld);
     }
 
-    public void moveUp(Agent agent, GridWorld gridWorld) {
+    public void moveUp(Agents agent, GridWorld gridWorld) {
         gridWorld.gridW[agent.getCurrentPositionX()][agent.getCurrentPositionY()] = GridWorld.FREE_CELL;
         agent.setCurrentPositionX(agent.getCurrentPositionX() - 1);
         gridWorld.gridW[agent.getCurrentPositionX()][agent.getCurrentPositionY()] = GridWorld.AGENT_CELL;
     }
 
-    public void moveDown(Agent agent, GridWorld gridWorld) {
+    public void moveDown(Agents agent, GridWorld gridWorld) {
 
         gridWorld.gridW[agent.getCurrentPositionX()][agent.getCurrentPositionY()] = GridWorld.FREE_CELL;
         agent.setCurrentPositionX(agent.getCurrentPositionX() + 1);
         gridWorld.gridW[agent.getCurrentPositionX()][agent.getCurrentPositionY()] = GridWorld.AGENT_CELL;
     }
 
-    public void moveRight(Agent agent, GridWorld gridWorld) {
+    public void moveRight(Agents agent, GridWorld gridWorld) {
 
         gridWorld.gridW[agent.getCurrentPositionX()][agent.getCurrentPositionY()] = GridWorld.FREE_CELL;
         agent.setCurrentPositionY(agent.getCurrentPositionY() + 1);
         gridWorld.gridW[agent.getCurrentPositionX()][agent.getCurrentPositionY()] = GridWorld.AGENT_CELL;
     }
 
-    public void moveLeft(Agent agent, GridWorld gridWorld) {
+    public void moveLeft(Agents agent, GridWorld gridWorld) {
 
         gridWorld.gridW[agent.getCurrentPositionX()][agent.getCurrentPositionY()] = GridWorld.FREE_CELL;
         agent.setCurrentPositionY(agent.getCurrentPositionY() - 1);
@@ -53,13 +49,13 @@ public class Actions {
 
     }
 
-    public void actionIncrementSignal(Agent agent) {
+    public void actionIncrementSignal(Agents agent) {
 
-        if (agent.getSignalPower() != Agent.maxSignal)
+        if (agent.getSignalPower() != Agents.maxSignal)
             agent.setSignalPower(agent.getSignalPower() + 1);
     }
 
-    public void actionDecrementSignal(Agent agent) {
+    public void actionDecrementSignal(Agents agent) {
 
         if (agent.getSignalPower() != 0)
             agent.setSignalPower(agent.getSignalPower() - 1);

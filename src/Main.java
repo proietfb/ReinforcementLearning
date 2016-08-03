@@ -11,38 +11,32 @@ public class Main {
 
     public static void main(String[] args) {
         long BEGIN = System.currentTimeMillis();
-        int x = 3, y = 3;
+        int x = 7, y = 7, nOfWalls = 6;
+
         GridWorld newWorld = new GridWorld(x, y);
-        Agent agent0 = new Agent(x, y);
-        Node node0 = new Node(newWorld);
+        Walls walls = new Walls(nOfWalls);
+        Agents agent0 = new Agents(x, y);
+        Nodes node0 = new Nodes();
         States state = new States();
         Actions action = new Actions();
 
         newWorld.defineWorld();
         newWorld.defineGridValues();
-        agent0.setStartPositionAgentX((int) (0 + Math.random() * (x - 1)));
-        agent0.setStartPositionAgentY((int) (0 + Math.random() * (y - 1)));
-        agent0.setStartState(newWorld.getGridValues()[agent0.getStartPositionAgentX()][agent0.getStartPositionAgentY()]);
-        node0.setPositionNodeX((int) (0 + Math.random() * (x) - 1));
-        node0.setPositionNodeY((int) (0 + Math.random() * (y) - 1));
-        node0.setNodeCurrentState(newWorld.defineGridValues()[node0.getPositionNodeX()][node0.getPositionNodeY()]);
-        agent0.setCurrentPositionX(agent0.getStartPositionAgentX());
-        agent0.setCurrentPositionY(agent0.getStartPositionAgentY());
-
-        agent0.currentState(newWorld);
-
         state.defineStates(newWorld);
+        newWorld.fillGridWorldWalls(x,y,walls);
+        newWorld.fillGridWorldAgents(agent0);
+        newWorld.fillGridWorldNodes(node0);
+        //agent0.setCurrentPositionX(agent0.getStartPositionAgentX());
+        //agent0.setCurrentPositionY(agent0.getStartPositionAgentY());
 
-        newWorld.fillGridWorldNodes(node0.getPositionNodeX(), node0.getPositionNodeY(), node0);
-        newWorld.fillGridWorldAgents(agent0.getStartPositionAgentX(), agent0.getStartPositionAgentY(), agent0);
-        agent0.currentState(newWorld);
+        //agent0.currentState(newWorld);
 
-        QLearning q = new QLearning(agent0, node0, newWorld);
+        QLearning q = new QLearning(agent0, node0, walls);
 
 
-        q.run(agent0, state, node0, newWorld, action);
+        q.run(agent0, state, node0, newWorld);
 
-
+        System.out.println("walls: " + Arrays.toString(walls.getWallsStatesPositions()));
         System.out.println(Arrays.deepToString(newWorld.getGridValues()));
         printWorld(newWorld);
         System.out.println("\n");

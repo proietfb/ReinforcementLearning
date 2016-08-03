@@ -3,7 +3,7 @@ import java.util.ArrayList;
 /**
  * Created by proietfb on 7/13/16.
  */
-public class Agent {
+public class Agents {
 
     public static final int maxSignal = 4;
     static int dimGridX, dimGridY;
@@ -17,7 +17,7 @@ public class Agent {
     int nNeighbourDiscovered;
     int nGoalDiscovered;
 
-    public Agent(int dimGridX, int dimGridY) {
+    public Agents(int dimGridX, int dimGridY) {
         this.dimGridX = dimGridX;
         this.dimGridY = dimGridY;
         previousStates = new ArrayList<>();
