@@ -9,19 +9,19 @@ public class QLearning {
 
     final DecimalFormat df;
     int statesCount;
-    double alpha = 0.5;
-    double gamma = 0.9;
+    double alpha = 0.1;
+    double gamma = 0.1;
 
     public int[][] R;
     public double[][] Q;
 
-    public QLearning(Agent agent, Node node, GridWorld gridWorld) {
+    public QLearning(Agent agent) {
         df = new DecimalFormat("#.##");
         statesCount = agent.getDimGridX() * agent.getDimGridY();
         R = new int[statesCount][statesCount];
         Q = new double[statesCount][statesCount];
-        initRewardValues(node);
-        defineQ();
+        //initRewardValues(node);
+        //defineQ();
     }
 
     private void initRewardValues(Node node) { //definisce i reward massimi di base nelle posizioni accanto al goal
@@ -30,38 +30,38 @@ public class QLearning {
             Arrays.fill(i, 0);
 
         if (node.getPositionNodeX() == 0 && node.getPositionNodeY() == 0){ //se il punto finale è in 0,0, il reward viene dal basso verso l'alto e da dx verso sx
-            R[node.getNodeCurrentState() + 1][node.getNodeCurrentState()] = 100; // dx sx
-            R[node.getNodeCurrentState() + Agent.dimGridX][node.getNodeCurrentState()] = 100;  //basso alto
+            R[node.getNodeCurrentState() + 1][node.getNodeCurrentState()] = 10; // dx sx
+            R[node.getNodeCurrentState() + Agent.dimGridX][node.getNodeCurrentState()] = 10;  //basso alto
         } else if (node.getPositionNodeX() == 0 && node.getPositionNodeY() == Agent.dimGridY-1) { //punto finale in 0,n il reward viene dal basso verso l'alto e da sx verso dx
             R[node.getNodeCurrentState() - 1][node.getNodeCurrentState()] = 100; //sx dx
-            R[node.getNodeCurrentState() + Agent.dimGridX][node.getNodeCurrentState()] = 100; // basso alto
+            R[node.getNodeCurrentState() + Agent.dimGridX][node.getNodeCurrentState()] = 10; // basso alto
         } else if (node.getPositionNodeX() == Agent.dimGridY - 1 && node.getPositionNodeY() == 0){ //punto finale in n,0 reward dall alto verso il basso e dadx verso sx
-            R[node.getNodeCurrentState() - Agent.dimGridX][node.getNodeCurrentState()] = 100; // alto basso
-            R[node.getNodeCurrentState() + 1][node.getNodeCurrentState()] = 100; //dx sx
+            R[node.getNodeCurrentState() - Agent.dimGridX][node.getNodeCurrentState()] = 10; // alto basso
+            R[node.getNodeCurrentState() + 1][node.getNodeCurrentState()] = 10; //dx sx
         } else if (node.getPositionNodeX() == Agent.dimGridY - 1 && node.getPositionNodeY() == Agent.dimGridY-1) { // punto finale in n,n reward dall alto verso il basso e da sx verso dx
-            R[node.getNodeCurrentState() - 1][node.getNodeCurrentState()] = 100; // sx dx
-            R[node.getNodeCurrentState() - Agent.dimGridX][node.getNodeCurrentState()] = 100; // alto basso
+            R[node.getNodeCurrentState() - 1][node.getNodeCurrentState()] = 10; // sx dx
+            R[node.getNodeCurrentState() - Agent.dimGridX][node.getNodeCurrentState()] = 10; // alto basso
         } else if((node.getPositionNodeX() > 0 && node.getPositionNodeX() < Agent.dimGridX - 1) && node.getPositionNodeY() == 0){ //prima colonna
-            R[node.getNodeCurrentState() - Agent.dimGridX][node.getNodeCurrentState()] = 100; //alto basso
-            R[node.getNodeCurrentState() + 1 ][node.getNodeCurrentState()] = 100; //dx sx
-            R[node.getNodeCurrentState() + Agent.dimGridX][node.getNodeCurrentState()] = 100;  //basso alto
+            R[node.getNodeCurrentState() - Agent.dimGridX][node.getNodeCurrentState()] = 10; //alto basso
+            R[node.getNodeCurrentState() + 1 ][node.getNodeCurrentState()] = 10; //dx sx
+            R[node.getNodeCurrentState() + Agent.dimGridX][node.getNodeCurrentState()] = 10;  //basso alto
         } else if ((node.getPositionNodeX() > 0 && node.getPositionNodeX() < Agent.dimGridX - 1) && node.getPositionNodeY() == Agent.dimGridY - 1){ //ultima colonna
-            R[node.getNodeCurrentState() - Agent.dimGridX][node.getNodeCurrentState()] = 100; //alto basso
-            R[node.getNodeCurrentState() - 1][node.getNodeCurrentState()] = 100; // sx dx
-            R[node.getNodeCurrentState() + Agent.dimGridX][node.getNodeCurrentState()] = 100;  //basso alto
+            R[node.getNodeCurrentState() - Agent.dimGridX][node.getNodeCurrentState()] = 10; //alto basso
+            R[node.getNodeCurrentState() - 1][node.getNodeCurrentState()] = 10; // sx dx
+            R[node.getNodeCurrentState() + Agent.dimGridX][node.getNodeCurrentState()] = 10;  //basso alto
         } else if (node.getPositionNodeX() == 0 && (node.getPositionNodeY() > 0 && node.getPositionNodeY() < Agent.dimGridY - 1)) { //prima riga
-            R[node.getNodeCurrentState() - 1][node.getNodeCurrentState()] = 100; // sx dx
-            R[node.getNodeCurrentState() + 1][node.getNodeCurrentState()] = 100; // dx sx
-            R[node.getNodeCurrentState() + Agent.dimGridX][node.getNodeCurrentState()] = 100;  //basso alto
+            R[node.getNodeCurrentState() - 1][node.getNodeCurrentState()] = 10; // sx dx
+            R[node.getNodeCurrentState() + 1][node.getNodeCurrentState()] = 10; // dx sx
+            R[node.getNodeCurrentState() + Agent.dimGridX][node.getNodeCurrentState()] = 10;  //basso alto
         } else if (node.getPositionNodeX() == Agent.dimGridX - 1 && (node.getPositionNodeY() > 0 && node.getPositionNodeY() < Agent.dimGridY - 1)){ //ultima riga
-            R[node.getNodeCurrentState() - 1][node.getNodeCurrentState()] = 100; // sx dx
-            R[node.getNodeCurrentState() + 1][node.getNodeCurrentState()] = 100; // dx sx
-            R[node.getNodeCurrentState() - Agent.dimGridX][node.getNodeCurrentState()] = 100; //alto basso
+            R[node.getNodeCurrentState() - 1][node.getNodeCurrentState()] = 10; // sx dx
+            R[node.getNodeCurrentState() + 1][node.getNodeCurrentState()] = 10; // dx sx
+            R[node.getNodeCurrentState() - Agent.dimGridX][node.getNodeCurrentState()] = 10; //alto basso
         } else { // in mezzo
-            R[node.getNodeCurrentState() + Agent.dimGridX][node.getNodeCurrentState()] = 100;  //basso alto
-            R[node.getNodeCurrentState() - 1][node.getNodeCurrentState()] = 100; // sx dx
-            R[node.getNodeCurrentState() + 1][node.getNodeCurrentState()] = 100; // dx sx
-            R[node.getNodeCurrentState() - Agent.dimGridX][node.getNodeCurrentState()] = 100; //alto basso
+            R[node.getNodeCurrentState() + Agent.dimGridX][node.getNodeCurrentState()] = 10;  //basso alto
+            R[node.getNodeCurrentState() - 1][node.getNodeCurrentState()] = 10; // sx dx
+            R[node.getNodeCurrentState() + 1][node.getNodeCurrentState()] = 10; // dx sx
+            R[node.getNodeCurrentState() - Agent.dimGridX][node.getNodeCurrentState()] = 10; //alto basso
         }
 
     }
@@ -72,50 +72,64 @@ public class QLearning {
         }
     }
 
-    private double maxQ(Agent agent, States state) {
+    private double maxQ(States states, int state) {
+        int[] actionsFromNextState = new int[states.definePossibleStates.get(state).size()];
+        listToArray(actionsFromNextState,states,state);
         double maxVal = 0;
-        for (int i = 0; i < state.definePossibleStates.get(agent.getCurrentState()).size(); i++) {
-            int nextState = state.definePossibleStates.get(agent.getCurrentState()).get(i);
-            double value = Q[agent.getCurrentState()][nextState];
+        for (int i = 0; i < actionsFromNextState.length; i++) {
+            int nextState = actionsFromNextState[i];
+            double value = Q[state][nextState];
             if (value >= maxVal)
                 maxVal = value;
         }
         return maxVal;
     }
 
-    private int policy(Agent agent, States state) {
+    private int policy(Agent agent, States state, int[] array) {
+        Random ran = new Random();
         double maxVal = 0;
         int policyGoToState = agent.getCurrentState();
         for (int i = 0; i < state.definePossibleStates.get(agent.getCurrentState()).size(); i++) {
-            int nextState = state.definePossibleStates.get(agent.getCurrentState()).get(i);
+            int nextState = array[i];
             double value = Q[agent.getCurrentState()][nextState];
-            if (value >= maxVal) {
+            if (value > maxVal) {
                 maxVal = value;
                 policyGoToState = nextState;
             }
         }
-        return policyGoToState;
+        if (maxVal == 0){
+            int index = ran.nextInt(array.length);
+            int action = array[index];
+            return action;
+
+        }
+        else
+            return policyGoToState;
     }
 
-    public void run(Agent agent, States states, Node node, GridWorld gridWorld, Actions actions) {
+    public void run(Agent agent, States states, Node node, GridWorld gridWorld) {
         Random ran = new Random();
-
-        for (int i = 0; i < 10000; i++) {
+        initRewardValues(node);
+        defineQ();
+        for (int i = 0; i < 100; i++) {
             agent.previousStates.clear();
             agent.setCurrentState(agent.getStartState());
             agent.previousStates.add(agent.getCurrentState());
             int state = agent.getCurrentState();
 
-            if (i < 9999) {
+            if (i < 99) {
 
                 while (state != node.getNodeCurrentState()) {
                     int[] actionsFromState = new int[states.definePossibleStates.get(state).size()];
                     listToArray(actionsFromState, states, state);
+//                    int action = policy(agent,states,actionsFromState);
+//                    int nextState = action;
+//                    double q =  Q[state][action];
                     int index = ran.nextInt(actionsFromState.length);
                     int action = actionsFromState[index];
                     int nextState = action;
                     double q = Q[state][action];
-                    double maxQ = maxQ(agent, states);
+                    double maxQ = maxQ(states,nextState);
                     int r = R[state][action];
                     double value = q + alpha * (r + (gamma * maxQ) - q);
                     setQ(state, action, value);
@@ -124,15 +138,15 @@ public class QLearning {
                     agent.previousStates.add(agent.getCurrentState());
                 }
 
-//                agent.setStartPositionAgentX((int) (0 + Math.random() * (gridWorld.getxGrid() - 1)));
-//                agent.setStartPositionAgentY((int) (0 + Math.random() * (gridWorld.getyGrid() - 1)));
-//                agent.setStartState(gridWorld.getGridValues()[agent.getStartPositionAgentX()][agent.getStartPositionAgentY()]);
-//                agent.setCurrentState(agent.getStartState());
-                //printResult(agent);
+                agent.setStartPositionAgentX((int) (0 + Math.random() * (gridWorld.getxGrid() - 1)));
+                agent.setStartPositionAgentY((int) (0 + Math.random() * (gridWorld.getyGrid() - 1)));
+                agent.setStartState(gridWorld.getGridValues()[agent.getStartPositionAgentX()][agent.getStartPositionAgentY()]);
+                agent.setCurrentState(agent.getStartState());
+                //printResult();
 
             }
             else {
-                System.out.println(Arrays.deepToString(getQ()));
+                printResult();
                 //agent.previousStates.clear();
                 while (state != node.getNodeCurrentState()){
                     int[] actionFromState = new int[states.definePossibleStates.get(state).size()];
@@ -166,14 +180,17 @@ public class QLearning {
         return ret;
     }
 
-    void printResult(Agent agent) {
+    void printResult() {
         System.out.println("Print result");
         for (int i = 0; i < Q.length; i++) {
-            System.out.print("out from " + agent.getCurrentState() + ":  ");
+            System.out.print("i " + i + ":  ");
             for (int j = 0; j < Q[i].length; j++) {
-                System.out.print(df.format(Q[i][j]) + " ");
+                if (Q[i][j] != 0)
+                    System.out.print("j " + j +": " + df.format(Q[i][j]) + " ");
+                else
+                    continue;
             }
-            System.out.println();
+            System.out.println("\n");
         }
     }
 
