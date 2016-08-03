@@ -5,13 +5,12 @@ import java.util.ArrayList;
  */
 public class States {
 
-
     public static int STATE_POSITION = 0;
     public static int STATE_SIGNALPOWER = 1;
     public static int STATE_N_NEIGHBOURS = 2;
     public static int STATE_N_GOALS = 3;
 
-    ArrayList<ArrayList<Integer>> definePossibleStates;
+    private ArrayList<ArrayList<Integer>> definePossibleStates;
     ArrayList<Integer> nextStatesList;
 
     public States() {
@@ -27,7 +26,6 @@ public class States {
         }
         return definePossibleStates;
     }
-
 
     private ArrayList<Integer> nextState(int i, int j, GridWorld gridWorld) {
         nextStatesList = new ArrayList<>();
@@ -73,9 +71,5 @@ public class States {
 
     public ArrayList<ArrayList<Integer>> getDefinePossibleStates() {
         return definePossibleStates;
-    }
-
-    public ArrayList<Integer> getNextStatesList() {
-        return nextStatesList;
     }
 }
