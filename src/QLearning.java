@@ -1,4 +1,5 @@
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -202,13 +203,12 @@ public class QLearning {
                         int[] actionFromState = new int[states.getDefinePossibleStates().get(state).size()];
                         listToArray(actionFromState,states,state);
                         state = policyMaxNextVal(agent,states,actionFromState);
-                        agent.setCurrentState(state);
+                        //agent.setCurrentState(state);
+                        updateCoordinates(agent, state);
                         agent.previousStates.add(agent.getCurrentState());
-                        agent.antenna.neighbourDiscovered[0].clear();
-                        agent.antenna.neighbourDiscovered[1].clear();
-                        agent.antenna.neighbourDiscovered[2].clear();
-                        agent.antenna.neighbourDiscovered[3].clear();
-                        agent.searchNeighbours(gridWorld ,agent.getCurrentPositionX(),agent.getCurrentPositionY(),Agents.maxSignal);
+                        for (int j = 0; j < agent.antenna.getNeighbourDiscovered().length; j++)
+                            agent.antenna.neighbourDiscovered[j].clear();
+                        agent.searchNeighbours(gridWorld);
                         printWorld(gridWorld);
                         //System.out.println("previous states" + agent.previousStates);
                         System.out.println(Arrays.deepToString(agent.antenna.getNeighbourDiscovered()));
@@ -280,6 +280,22 @@ public class QLearning {
             ret[i++] = e.intValue();
         }
         return ret;
+    }
+
+    private void updateCoordinates(Agents agent, int state){
+        int oldState = agent.getCurrentState();
+        agent.setCurrentState(state);
+        int newState = agent.getCurrentState();
+
+        if (oldState == newState - 1){ // spostamento dx
+            agent.setCurrentPositionY(agent.getCurrentPositionY() + 1);
+        } else if (oldState == newState + 1) { //spostamento sx
+            agent.setCurrentPositionY(agent.getCurrentPositionY() - 1);
+        } else if (oldState == newState - Agents.dimGridX) { // spostamento alto
+            agent.setCurrentPositionX(agent.getCurrentPositionX() - 1);
+        } else { // spostamento basso
+            agent.setCurrentPositionX(agent.getCurrentPositionX() + 1);
+        }
     }
 
     void printResult(Agents agent) {

@@ -43,7 +43,7 @@ public class Agents {
         }
     }
 
-    public void searchNeighbours(GridWorld gridWorld, int agentXpos, int agentYpos, int powerAntenna){
+    public void searchNeighbours(GridWorld gridWorld){
         antenna.discoverUP(gridWorld.getGridW(),getCurrentPositionX(),getCurrentPositionY(),maxSignal);
         antenna.discoverDown(gridWorld.getGridW(),getCurrentPositionX(),getCurrentPositionY(),maxSignal);
         antenna.discoverLeft(gridWorld.getGridW(),getCurrentPositionX(),getCurrentPositionY(),maxSignal);
