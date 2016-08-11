@@ -3,12 +3,11 @@
  */
 public class Nodes {
 
-    int positionNodeX, positionNodeY;
+    private int positionNodeX, positionNodeY;
 
-    int nodeCurrentState;
+    private int nodeCurrentState;
 
-    public Nodes() {
-    }
+    public Nodes() {}
 
     public int getPositionNodeX() {
         return positionNodeX;

@@ -1,40 +1,53 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by proietfb on 7/13/16.
  */
 public class Agents {
 
-    public static final int maxSignal = 4;
+    public static final int maxSignal = 2;
     static int dimGridX, dimGridY;
 
-    ArrayList<Integer> previousStates;
+    private int statesCount;
 
-    int startPositionAgentX, startPositionAgentY;
-    int currentPositionX, currentPositionY;
-    int currentState, startState;
-    int signalPower;
-    int nNeighbourDiscovered;
-    int nGoalDiscovered;
+    ArrayList<Integer> previousStates;
+    public int[] nodesStatesPositions;
+    private double[][] Q;
+
+    private int startPositionAgentX, startPositionAgentY, currentPositionX, currentPositionY;
+    private int currentState, startState;
+    private int signalPower;
+    private int nNeighbourDiscovered;
+    private int nGoalDiscovered;
+
+    Antenna antenna;
 
     public Agents(int dimGridX, int dimGridY) {
         this.dimGridX = dimGridX;
         this.dimGridY = dimGridY;
+
+        statesCount = getDimGridX() * getDimGridY();
         previousStates = new ArrayList<>();
         nNeighbourDiscovered = 0;
         nGoalDiscovered = 0;
+        nodesStatesPositions = new int[Main.nNodes];
+        antenna = new Antenna();
+        Q = new double[statesCount][statesCount];
+        defineQ();
     }
 
-    public int currentState(GridWorld gridWorld) {
-        startState = gridWorld.getGridValues()[getStartPositionAgentX()][getStartPositionAgentY()];
-        currentState = gridWorld.getGridValues()[currentPositionX][currentPositionY];
-        return currentState;
+    private void defineQ() {
+        for (double[] i : Q) {
+            Arrays.fill(i, 0);
+        }
     }
 
-    public ArrayList<Integer> listOfMoves(GridWorld gridWorld) {
-
-        previousStates.add(currentState);
-        return previousStates;
+    public void searchNeighbours(GridWorld gridWorld, int agentXpos, int agentYpos, int powerAntenna){
+        antenna.discoverUP(gridWorld.getGridW(),getCurrentPositionX(),getCurrentPositionY(),maxSignal);
+        antenna.discoverDown(gridWorld.getGridW(),getCurrentPositionX(),getCurrentPositionY(),maxSignal);
+        antenna.discoverLeft(gridWorld.getGridW(),getCurrentPositionX(),getCurrentPositionY(),maxSignal);
+        antenna.discoverRight(gridWorld.getGridW(),getCurrentPositionX(),getCurrentPositionY(),maxSignal);
     }
 
     public int getDimGridX() {
@@ -97,10 +110,6 @@ public class Agents {
         this.currentPositionY = currentPositionY;
     }
 
-    public void setPreviousStates(ArrayList<Integer> previousStates) {
-        this.previousStates = previousStates;
-    }
-
     public void setSignalPower(int signalPower) {
         this.signalPower = signalPower;
     }
@@ -113,11 +122,7 @@ public class Agents {
         this.startState = startState;
     }
 
-    public void setCurrentState(int currentState) {
-        this.currentState = currentState;
-
-    }
-
+    public void setCurrentState(int currentState) {this.currentState = currentState;}
 
     public void setnNeighbourDiscovered(int nNeighbourDiscovered) {
         this.nNeighbourDiscovered = nNeighbourDiscovered;
@@ -125,5 +130,25 @@ public class Agents {
 
     public void setnGoalDiscovered(int nGoalDiscovered) {
         this.nGoalDiscovered = nGoalDiscovered;
+    }
+
+    public int[] getNodesStatesPositions() {
+        return nodesStatesPositions;
+    }
+
+    public void setNodesStatesPositions(int[] nodesStatesPositions, int position) {
+        this.nodesStatesPositions[position] = nodesStatesPositions[position];
+    }
+
+    public double[][] getQ() {
+        return Q;
+    }
+
+    public void setQ(int state, int action, double value) {
+        Q[state][action] = value;
+    }
+
+    public int getStatesCount() {
+        return statesCount;
     }
 }
