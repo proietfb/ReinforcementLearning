@@ -9,6 +9,7 @@ public class Antenna {
     public static final int LEFT = 2;
     public static final int RIGHT = 3;
 
+    private int powerTmp = 0;
     public ArrayList<Integer>[] neighbourDiscovered;
 
     public Antenna() {
@@ -18,56 +19,47 @@ public class Antenna {
     }
 
     public void discoverUP(int[][] grid, int agentPositionX, int agentPositionY, int power){
-        int powerTmp = 0;
-
-        while(powerTmp < power+1){
+        for (int i = 0; i < power; i++){
             powerTmp++;
-            if (agentPositionX-powerTmp >= 0)
-                neighbourDiscovered[UP].add(grid[agentPositionX-powerTmp][agentPositionY]);
-            else
+            if (agentPositionX-powerTmp < 0)
                 break;
-
+            else
+                neighbourDiscovered[UP].add(grid[agentPositionX - powerTmp][agentPositionY]);
         }
-
+        powerTmp = 0;
     }
 
     public void discoverDown(int[][] grid, int agentPositionX, int agentPositionY, int power) {
-        int powerTmp = 0;
-
-        while(powerTmp < power+1){
+        for (int i = 0; i < power; i++){
             powerTmp++;
-            if (agentPositionX+powerTmp <= Agents.dimGridX - 1)
-                neighbourDiscovered[DOWN].add(grid[agentPositionX+powerTmp][agentPositionY]);
-            else
+            if (agentPositionX+powerTmp > Agents.dimGridX - 1)
                 break;
-
+            else
+                neighbourDiscovered[DOWN].add(grid[agentPositionX + powerTmp][agentPositionY]);
         }
+        powerTmp = 0;
     }
 
     public void discoverLeft(int[][] grid, int agentPositionX, int agentPositionY, int power){
-        int powerTmp = 0;
-
-        while(powerTmp < power+1){
+        for (int i = 0; i < power; i++){
             powerTmp++;
-            if (agentPositionY-powerTmp >= 0)
-                neighbourDiscovered[LEFT].add(grid[agentPositionX][agentPositionY-powerTmp]);
-            else
+            if (agentPositionY-powerTmp < 0)
                 break;
-
+            else
+                neighbourDiscovered[LEFT].add(grid[agentPositionX][agentPositionY-powerTmp]);
         }
+        powerTmp = 0;
     }
 
     public void discoverRight(int[][] grid, int agentPositionX, int agentPositionY, int power){
-        int powerTmp = 0;
-
-        while(powerTmp < power+1){
+        for (int i = 0; i < power; i++){
             powerTmp++;
-            if (agentPositionY+powerTmp <= Agents.dimGridY - 1)
-                neighbourDiscovered[RIGHT].add(grid[agentPositionX][agentPositionY+powerTmp]);
-            else
+            if (agentPositionY+powerTmp > Agents.dimGridY - 1)
                 break;
-
+            else
+                neighbourDiscovered[RIGHT].add(grid[agentPositionX][agentPositionY+powerTmp]);
         }
+        powerTmp = 0;
     }
 
     public ArrayList<Integer>[] getNeighbourDiscovered() {

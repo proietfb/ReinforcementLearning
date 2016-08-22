@@ -28,38 +28,38 @@ public class QLearning {
 
         for(int i = 0; i< walls.getnOfWalls();i++){
             if (walls.getWallsStatesPositions()[i] == 0){ //0,0
-                R[walls.getWallsStatesPositions()[i] + 1][walls.getWallsStatesPositions()[i]] = -1; // dx sx
-                R[walls.getWallsStatesPositions()[i] + Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -1; //basso alto
+                R[walls.getWallsStatesPositions()[i] + 1][walls.getWallsStatesPositions()[i]] = -10; // dx sx
+                R[walls.getWallsStatesPositions()[i] + Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -10; //basso alto
             } else if (walls.getWallsStatesPositions()[i] == ((1*Agents.dimGridY)-1)) { //0,n
-                R[walls.getWallsStatesPositions()[i] - 1][walls.getWallsStatesPositions()[i]] = -1; //sx dx
-                R[walls.getWallsStatesPositions()[i] + Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -1; // basso alto
+                R[walls.getWallsStatesPositions()[i] - 1][walls.getWallsStatesPositions()[i]] = -10; //sx dx
+                R[walls.getWallsStatesPositions()[i] + Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -10; // basso alto
             } else if (walls.getWallsStatesPositions()[i] == ((Agents.dimGridX*Agents.dimGridY)-Agents.dimGridX)) { //n,0
-                R[walls.getWallsStatesPositions()[i] + 1][walls.getWallsStatesPositions()[i]] = -1; // dx sx
-                R[walls.getWallsStatesPositions()[i] - Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -1; // alto basso
+                R[walls.getWallsStatesPositions()[i] + 1][walls.getWallsStatesPositions()[i]] = -10; // dx sx
+                R[walls.getWallsStatesPositions()[i] - Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -10; // alto basso
             } else if (walls.getWallsStatesPositions()[i] == ((Agents.dimGridX*Agents.dimGridY) - 1)) { //n,n
-                R[walls.getWallsStatesPositions()[i] - 1][walls.getWallsStatesPositions()[i]] = -1; //sx dx
-                R[walls.getWallsStatesPositions()[i] - Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -1; // alto basso
+                R[walls.getWallsStatesPositions()[i] - 1][walls.getWallsStatesPositions()[i]] = -10; //sx dx
+                R[walls.getWallsStatesPositions()[i] - Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -10; // alto basso
             } else if ((walls.getWallPositionX()[i] > 0 && walls.getWallPositionX()[i] < Agents.dimGridX - 1) && walls.getWallPositionY()[i] == 0) { //prima colonna
-                R[walls.getWallsStatesPositions()[i] - Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -1; // alto basso
-                R[walls.getWallsStatesPositions()[i] + 1][walls.getWallsStatesPositions()[i]] = -1; // dx sx
-                R[walls.getWallsStatesPositions()[i] + Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -1; // basso alto
+                R[walls.getWallsStatesPositions()[i] - Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -10; // alto basso
+                R[walls.getWallsStatesPositions()[i] + 1][walls.getWallsStatesPositions()[i]] = -10; // dx sx
+                R[walls.getWallsStatesPositions()[i] + Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -10; // basso alto
             } else if ((walls.getWallPositionX()[i] > 0 && walls.getWallPositionX()[i] < Agents.dimGridX - 1) && walls.getWallPositionY()[i] == Agents.dimGridY - 1){ //ultima colonna
-                R[walls.getWallsStatesPositions()[i] - Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -1; // alto basso
-                R[walls.getWallsStatesPositions()[i] - 1][walls.getWallsStatesPositions()[i]] = -1; //sx dx
-                R[walls.getWallsStatesPositions()[i] + Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -1; // basso alto
+                R[walls.getWallsStatesPositions()[i] - Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -10; // alto basso
+                R[walls.getWallsStatesPositions()[i] - 1][walls.getWallsStatesPositions()[i]] = -10; //sx dx
+                R[walls.getWallsStatesPositions()[i] + Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -10; // basso alto
             } else if (walls.getWallPositionX()[i] == 0 && (walls.getWallPositionY()[i] > 0 && walls.getWallPositionY()[i]< Agents.dimGridY - 1)){ //prima riga
-                R[walls.getWallsStatesPositions()[i] - 1][walls.getWallsStatesPositions()[i]] = -1; //sx dx
-                R[walls.getWallsStatesPositions()[i] + 1][walls.getWallsStatesPositions()[i]] = -1; // dx sx
-                R[walls.getWallsStatesPositions()[i] + Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -1; // basso alto
+                R[walls.getWallsStatesPositions()[i] - 1][walls.getWallsStatesPositions()[i]] = -10; //sx dx
+                R[walls.getWallsStatesPositions()[i] + 1][walls.getWallsStatesPositions()[i]] = -10; // dx sx
+                R[walls.getWallsStatesPositions()[i] + Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -10; // basso alto
             } else if (walls.getWallPositionX()[i] == Agents.dimGridX - 1 && (walls.getWallPositionY()[i] > 0 && walls.getWallPositionY()[i] < Agents.dimGridY - 1)) { //ultima riga
-                R[walls.getWallsStatesPositions()[i] - 1][walls.getWallsStatesPositions()[i]] = -1; //sx dx
-                R[walls.getWallsStatesPositions()[i] + 1][walls.getWallsStatesPositions()[i]] = -1; // dx sx
-                R[walls.getWallsStatesPositions()[i] - Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -1; // alto basso
+                R[walls.getWallsStatesPositions()[i] - 1][walls.getWallsStatesPositions()[i]] = -10; //sx dx
+                R[walls.getWallsStatesPositions()[i] + 1][walls.getWallsStatesPositions()[i]] = -10; // dx sx
+                R[walls.getWallsStatesPositions()[i] - Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -10; // alto basso
             } else {
-                R[walls.getWallsStatesPositions()[i] + Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -1; // basso alto
-                R[walls.getWallsStatesPositions()[i] - 1][walls.getWallsStatesPositions()[i]] = -1; //sx dx
-                R[walls.getWallsStatesPositions()[i] + 1][walls.getWallsStatesPositions()[i]] = -1; // dx sx
-                R[walls.getWallsStatesPositions()[i] - Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -1; // alto basso
+                R[walls.getWallsStatesPositions()[i] + Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -10; // basso alto
+                R[walls.getWallsStatesPositions()[i] - 1][walls.getWallsStatesPositions()[i]] = -10; //sx dx
+                R[walls.getWallsStatesPositions()[i] + 1][walls.getWallsStatesPositions()[i]] = -10; // dx sx
+                R[walls.getWallsStatesPositions()[i] - Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -10; // alto basso
             }
         }
     }
@@ -154,7 +154,7 @@ public class QLearning {
             if (i < 999) {
 
                 while (loop) {
-                    for (int j=0;j< agent.nodesStatesPositions.length;j++){
+                    for (int j = 0; j < agent.nodesStatesPositions.length; j++) {
                         if (state == agent.getNodesStatesPositions()[j]) {
                             nTimes4Obj[j]++;
                             agent.previousStates.clear();
@@ -190,15 +190,14 @@ public class QLearning {
                 System.out.println(Arrays.toString(nTimes4Obj));
                 //printResult();
                 while (loop){
-                    for (int j=0;j< agent.nodesStatesPositions.length;j++){
+                    for (int j=0;j< agent.nodesStatesPositions.length;j++) {
                         if (state == agent.getNodesStatesPositions()[j]) {
                             loop = false;
                             break;
                         }
                     }
-                    if (loop == false){
+                    if (loop == false)
                         break;
-                    }
                     else {
                         int[] actionFromState = new int[states.getDefinePossibleStates().get(state).size()];
                         listToArray(actionFromState,states,state);
@@ -211,7 +210,7 @@ public class QLearning {
                         agent.searchNeighbours(gridWorld);
                         printWorld(gridWorld);
                         //System.out.println("previous states" + agent.previousStates);
-                        System.out.println(Arrays.deepToString(agent.antenna.getNeighbourDiscovered()));
+                        System.out.println("state " + state + ": " + Arrays.deepToString(agent.antenna.getNeighbourDiscovered()));
                     }
                 }
             }
@@ -225,9 +224,7 @@ public class QLearning {
         for (int i = 0; i < 200; i++) {
             agent.previousStates.add(agent.getCurrentState());
             int state = agent.getCurrentState();
-
             if (i < 199) {
-
                 while (state != node.getNodeCurrentState()) {
                     int[] actionsFromState = new int[states.getDefinePossibleStates().get(state).size()];
                     listToArray(actionsFromState, states, state);
@@ -291,7 +288,7 @@ public class QLearning {
             agent.setCurrentPositionY(agent.getCurrentPositionY() + 1);
         } else if (oldState == newState + 1) { //spostamento sx
             agent.setCurrentPositionY(agent.getCurrentPositionY() - 1);
-        } else if (oldState == newState - Agents.dimGridX) { // spostamento alto
+        } else if (oldState == newState + Agents.dimGridX) { // spostamento alto
             agent.setCurrentPositionX(agent.getCurrentPositionX() - 1);
         } else { // spostamento basso
             agent.setCurrentPositionX(agent.getCurrentPositionX() + 1);
