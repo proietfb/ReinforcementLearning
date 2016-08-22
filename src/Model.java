@@ -3,21 +3,22 @@ import java.util.Arrays;
 /**
  * Created by proietfb on 7/13/16.
  */
-public class Main {
+public class Model {
 
     static int x,y,nOfWalls,nAgents, nNodes;
 
-    public Main() {}
+    public Model() {}
 
-    public static void main(String[] args) {
-
+    public void runModel(){
         long BEGIN = System.currentTimeMillis();
 
-        x = 7;
-        y = 7;
-        nOfWalls = 6;
-        nAgents = 3;
-        nNodes = 5;
+        Controller controller = new Controller();
+
+        x = controller.getxValueGrid();
+        y = controller.getyValueGrid();
+        nOfWalls = controller.getnWalls();
+        nAgents = controller.getnAgents();
+        nNodes = controller.getnNodes();
 
         GridWorld newWorld = new GridWorld(x, y);
         Walls walls = new Walls(nOfWalls);

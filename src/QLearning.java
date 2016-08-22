@@ -1,5 +1,4 @@
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -146,7 +145,7 @@ public class QLearning {
 
     public void runMultiAgent(Agents agent, States states, GridWorld gridWorld){
         Random ran = new Random();
-        int[] nTimes4Obj = new int[Main.nNodes];
+        int[] nTimes4Obj = new int[Model.nNodes];
         for (int i = 0; i < 1000; i++) {
             boolean loop = true;
             agent.previousStates.add(agent.getCurrentState());
@@ -203,7 +202,7 @@ public class QLearning {
                         listToArray(actionFromState,states,state);
                         state = policyMaxNextVal(agent,states,actionFromState);
                         //agent.setCurrentState(state);
-                        updateCoordinates(agent, state);
+                        updateCoordinates(agent, gridWorld, state);
                         agent.previousStates.add(agent.getCurrentState());
                         for (int j = 0; j < agent.antenna.getNeighbourDiscovered().length; j++)
                             agent.antenna.neighbourDiscovered[j].clear();
@@ -279,8 +278,10 @@ public class QLearning {
         return ret;
     }
 
-    private void updateCoordinates(Agents agent, int state){
+    private void updateCoordinates(Agents agent, GridWorld gridWorld,int state){
         int oldState = agent.getCurrentState();
+        int oldStatePositionX = agent.getCurrentPositionX();
+        int oldStatePositionY = agent.getCurrentPositionY();
         agent.setCurrentState(state);
         int newState = agent.getCurrentState();
 
@@ -293,7 +294,14 @@ public class QLearning {
         } else { // spostamento basso
             agent.setCurrentPositionX(agent.getCurrentPositionX() + 1);
         }
+        updateAction(agent,gridWorld, oldStatePositionX,oldStatePositionY);
     }
+
+    public void updateAction(Agents agent, GridWorld gridWorld, int oldPositionX, int oldPositionY) {
+        gridWorld.getGridW()[oldPositionX][oldPositionY] = GridWorld.FREE_CELL;
+        gridWorld.getGridW()[agent.getCurrentPositionX()][agent.getCurrentPositionY()] = GridWorld.AGENT_CELL;
+    }
+
 
     void printResult(Agents agent) {
         System.out.println("Print result");

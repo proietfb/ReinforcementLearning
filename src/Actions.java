@@ -1,6 +1,14 @@
 /**
  * Created by proietfb on 7/13/16.
  */
+
+//////                 //////
+
+//     forse inutile   //
+
+/////                 //////
+
+
 public class Actions {
 
     public static final int N_ACTIONS = 6;
@@ -9,19 +17,18 @@ public class Actions {
     public Actions() {}
 
     public void possibleActionsFromState(Agents agent, int step, GridWorld gridWorld) {
-        if (agent.getCurrentState() == agent.previousStates.get(step - 1) + 1) //mossa a dx
-            moveRight(agent, gridWorld);
-        else if (agent.getCurrentState() == agent.previousStates.get(step - 1) - 1) // mossa a sx
-            moveLeft(agent, gridWorld);
-        else if (agent.getCurrentState() == agent.previousStates.get(step - 1) + agent.getDimGridX()) //in basso
-            moveDown(agent, gridWorld);
-        else
-            moveUp(agent, gridWorld);
+//        if (agent.getCurrentState() == agent.previousStates.get(step - 1) + 1) //mossa a dx
+//            moveRight(agent, gridWorld);
+//        else if (agent.getCurrentState() == agent.previousStates.get(step - 1) - 1) // mossa a sx
+//            moveLeft(agent, gridWorld);
+//        else if (agent.getCurrentState() == agent.previousStates.get(step - 1) + agent.getDimGridX()) //in basso
+//            moveDown(agent, gridWorld);
+//        else
+//            moveUp(agent, gridWorld);
     }
 
-    public void moveUp(Agents agent, GridWorld gridWorld) {
-        gridWorld.getGridW()[agent.getCurrentPositionX()][agent.getCurrentPositionY()] = GridWorld.FREE_CELL;
-        agent.setCurrentPositionX(agent.getCurrentPositionX() - 1);
+    public void updateAction(Agents agent, GridWorld gridWorld, int oldPositionX, int oldPositionY) {
+        gridWorld.getGridW()[oldPositionX][oldPositionY] = GridWorld.FREE_CELL;
         gridWorld.getGridW()[agent.getCurrentPositionX()][agent.getCurrentPositionY()] = GridWorld.AGENT_CELL;
     }
 

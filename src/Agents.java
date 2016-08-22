@@ -31,7 +31,7 @@ public class Agents {
         previousStates = new ArrayList<>();
         nNeighbourDiscovered = 0;
         nGoalDiscovered = 0;
-        nodesStatesPositions = new int[Main.nNodes];
+        nodesStatesPositions = new int[Model.nNodes];
         antenna = new Antenna();
         Q = new double[statesCount][statesCount];
         defineQ();

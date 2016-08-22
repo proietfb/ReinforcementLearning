@@ -51,7 +51,7 @@ public class GridWorld {
             int x = (int) (0 + Math.random() * (xGrid - 1));
             int y = (int) (0 + Math.random() * (yGrid - 1));
             if (gridW[x][y] == FREE_CELL && setFirstStartAgents == false) { // definisco per la prima volta la posizione dell'agente
-                if (defineStartAgents < Main.nAgents) {
+                if (defineStartAgents < Model.nAgents) {
                     gridW[x][y] = AGENT_CELL;
                     agent.setStartPositionAgentX(x);
                     agent.setStartPositionAgentY(y);
