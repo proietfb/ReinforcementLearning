@@ -1,26 +1,34 @@
-import java.util.Arrays;
-
 /**
  * Created by proietfb on 7/13/16.
  */
-public class Model {
+public class Model extends Thread{
 
-    static int x,y,nOfWalls,nAgents, nNodes;
+    static int xGrid,yGrid,nOfWalls,nAgents, nNodes;
 
     public Model() {}
 
+    public void run(){
+
+    }
+
+    public void createAgents(int nAgents){
+        Thread threadforEachAgents[] = new Thread[nAgents];
+        for (int i = 0; i< nAgents; i++){
+            threadforEachAgents[i] = new Thread();
+        }
+    }
+
     public void runModel(){
+
         long BEGIN = System.currentTimeMillis();
 
-        Controller controller = new Controller();
+        xGrid = 8;
+        yGrid = 8;
+        nOfWalls = 10;
+        nAgents = 5;
+        nNodes = 5;
 
-        x = controller.getxValueGrid();
-        y = controller.getyValueGrid();
-        nOfWalls = controller.getnWalls();
-        nAgents = controller.getnAgents();
-        nNodes = controller.getnNodes();
-
-        GridWorld newWorld = new GridWorld(x, y);
+        GridWorld newWorld = new GridWorld(xGrid, yGrid);
         Walls walls = new Walls(nOfWalls);
         Agents[] agents = new Agents[nAgents];
         Nodes[] nodes = new Nodes[nNodes];
@@ -29,38 +37,39 @@ public class Model {
         newWorld.defineWorld();
         newWorld.defineGridValues();
         state.defineStates(newWorld);
-        newWorld.fillGridWorldWalls(x,y,walls);
+        newWorld.fillGridWorldWalls(xGrid,yGrid,walls);
 
         for (int i = 0; i < nodes.length; i++){
             nodes[i] = new Nodes();
             newWorld.fillGridWorldNodes(nodes[i]);
-            System.out.println("state of node " + i + ": "+ nodes[i].getNodeCurrentState());
+            //System.out.println("state of node " + i + ": "+ nodes[i].getNodeCurrentState());
 
         }
 
+        createAgents(nAgents);
 
-        for (int i = 0; i < agents.length; i++){
-            agents[i] = new Agents(x,y);
+        for (int i = 0; i < agents.length; i++){ // creo gli agenti
+            agents[i] = new Agents(xGrid,yGrid);
             newWorld.fillGridWorldAgents(agents[i]);
-            System.out.println("state of agent " + i + ": "+ agents[i].getCurrentState());
+            //System.out.println("state of agent " + i + ": "+ agents[i].getCurrentState());
         }
 
-        for (int i = 0; i < agents.length;i++){
+        for (int i = 0; i < agents.length;i++){ // ogni agente conosce tutti gli obiettivi disponibili
             for (int j=0; j< nodes.length;j++){
                 agents[i].nodesStatesPositions[j] = nodes[j].getNodeCurrentState();
             }
         }
 
-        System.out.println(Arrays.deepToString(newWorld.getGridValues()) + "\n");
+        //System.out.println(Arrays.deepToString(newWorld.getGridValues()) + "\n");
         //printWorld(newWorld);
-        System.out.println("\n");
-        System.out.println(Arrays.toString(agents[0].getNodesStatesPositions()));
+        //System.out.println("\n");
+        //System.out.println(Arrays.toString(agents[0].getNodesStatesPositions()));
 
 
         for (int i = 0; i < agents.length;i++){
             QLearning q = new QLearning(agents[i], nodes, walls);
             q.runMultiAgent(agents[i], state, newWorld);
-            System.out.println("agent " + i+ ": " +agents[i].getPreviousStates());
+            //System.out.println("agent " + i+ ": " +agents[i].getPreviousStates());
         }
 
 
@@ -68,6 +77,14 @@ public class Model {
         long END = System.currentTimeMillis();
         System.out.println("Time: " + (END - BEGIN) / 1000.0 + " sec.");
     }
+
+    public static void main(String args[]){
+        new Model().runModel();
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
     private static void printWorld(GridWorld gridWorld) {
         for (int i = 0; i < gridWorld.getGridW().length; i++) {
@@ -95,5 +112,4 @@ public class Model {
             System.out.print("\n");
         }
     }
-
 }

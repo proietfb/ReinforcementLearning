@@ -27,6 +27,11 @@ public class Antenna {
                 neighbourDiscovered[UP].add(grid[agentPositionX - powerTmp][agentPositionY]);
         }
         powerTmp = 0;
+        for (int i = 0; i < neighbourDiscovered[UP].size(); i++){
+            if (neighbourDiscovered[UP].get(i) == GridWorld.AGENT_CELL){
+                System.out.println("ho trovato un vicino sopra di me mentre mi trovo allo stato (" + agentPositionX + ", " + agentPositionY + ")");
+            }
+        }
     }
 
     public void discoverDown(int[][] grid, int agentPositionX, int agentPositionY, int power) {
