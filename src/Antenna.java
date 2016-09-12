@@ -29,7 +29,7 @@ public class Antenna {
         powerTmp = 0;
         for (int i = 0; i < neighbourDiscovered[UP].size(); i++){
             if (neighbourDiscovered[UP].get(i) == GridWorld.AGENT_CELL){
-                System.out.println("ho trovato un vicino sopra di me mentre mi trovo allo stato (" + agentPositionX + ", " + agentPositionY + ")");
+                System.out.println("ho trovato un vicino sopra di me a distanza "+ (i+1)  +" mentre mi trovo allo stato (" + agentPositionX + ", " + agentPositionY + ")");
             }
         }
     }
@@ -43,6 +43,11 @@ public class Antenna {
                 neighbourDiscovered[DOWN].add(grid[agentPositionX + powerTmp][agentPositionY]);
         }
         powerTmp = 0;
+        for (int i = 0; i < neighbourDiscovered[DOWN].size(); i++){
+            if (neighbourDiscovered[DOWN].get(i) == GridWorld.AGENT_CELL){
+                System.out.println("ho trovato un vicino sotto di me a distanza "+ (i+1)  +" mentre mi trovo allo stato (" + agentPositionX + ", " + agentPositionY + ")");
+            }
+        }
     }
 
     public void discoverLeft(int[][] grid, int agentPositionX, int agentPositionY, int power){
@@ -54,6 +59,11 @@ public class Antenna {
                 neighbourDiscovered[LEFT].add(grid[agentPositionX][agentPositionY-powerTmp]);
         }
         powerTmp = 0;
+        for (int i = 0; i < neighbourDiscovered[LEFT].size(); i++){
+            if (neighbourDiscovered[LEFT].get(i) == GridWorld.AGENT_CELL){
+                System.out.println("ho trovato un vicino alla mia sinistra a distanza "+ (i+1)  +" mentre mi trovo allo stato (" + agentPositionX + ", " + agentPositionY + ")");
+            }
+        }
     }
 
     public void discoverRight(int[][] grid, int agentPositionX, int agentPositionY, int power){
@@ -65,6 +75,11 @@ public class Antenna {
                 neighbourDiscovered[RIGHT].add(grid[agentPositionX][agentPositionY+powerTmp]);
         }
         powerTmp = 0;
+        for (int i = 0; i < neighbourDiscovered[RIGHT].size(); i++){
+            if (neighbourDiscovered[RIGHT].get(i) == GridWorld.AGENT_CELL){
+                System.out.println("ho trovato un vicino alla mia destra a distanza "+ (i+1)  +" mentre mi trovo allo stato (" + agentPositionX + ", " + agentPositionY + ")");
+            }
+        }
     }
 
     public ArrayList<Integer>[] getNeighbourDiscovered() {

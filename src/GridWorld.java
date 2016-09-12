@@ -1,3 +1,5 @@
+import javax.jws.WebParam;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -5,23 +7,25 @@ import java.util.Arrays;
  */
 public class GridWorld {
 
+    public static final int ANTENNA = 9 ;
     public static final int FREE_CELL = 0;
     public static final int WALL_CELL = 1;
     public static final int NODE_CELL = 2;
     public static final int AGENT_CELL = 3;
 
     private int xGrid, yGrid;
-
-    private int[][] gridW, gridValues;
-
-    private boolean setFirstStartAgents = false;
-    private int previousStartX, previousStartY;
+    private int[][] gridW, gridValues, copyGridW;
+    public LinkToAntennaMatrix[] linkToAntennaMatrix;
 
     public GridWorld(int xGrid, int yGrid) {
         this.xGrid = xGrid;
         this.yGrid = yGrid;
         gridW = new int[this.xGrid][this.yGrid];
+        copyGridW = new int[this.xGrid][this.yGrid];
         gridValues = new int[this.xGrid][this.yGrid];
+        linkToAntennaMatrix = new LinkToAntennaMatrix[Model.nAgents];
+        for(int i = 0; i< Model.nAgents;i++)
+            linkToAntennaMatrix[i] = new LinkToAntennaMatrix();
     }
 
     public int[][] defineWorld() {
@@ -31,6 +35,23 @@ public class GridWorld {
         }
         return gridW;
     }
+
+    public void copyWorld(){
+        for (int i = 0; i < getGridW().length; i++) {
+            for (int j = 0; j < getGridW()[0].length; j++) {
+                copyGridW[i][j] = getGridW()[i][j];
+            }
+        }
+    }
+
+    public void updateWorld(){
+        for (int i = 0; i < getGridW().length; i++) {
+            for (int j = 0; j < getGridW()[0].length; j++) {
+                gridW[i][j] = getCopyGridW()[i][j];
+            }
+        }
+    }
+
 
     public int[][] defineGridValues() { //assegno un valore ad ogni cella della griglia
 
@@ -45,42 +66,75 @@ public class GridWorld {
         return gridValues;
     }
 
+
+
+    public int[][] defineFirstAgentPositions(Agents agent, GridWorld gridWorld, Walls walls){
+        while (true){
+            int x = (int) (0 + Math.random() * (xGrid - 1));
+            int y = (int) (0 + Math.random() * (yGrid - 1));
+            if(gridW[x][y] == FREE_CELL){
+                gridW[x][y] = AGENT_CELL;
+                agent.setStartPositionAgentX(x);
+                agent.setStartPositionAgentY(y);
+                agent.setCurrentPositionX(agent.getStartPositionAgentX());
+                agent.setCurrentPositionY(agent.getStartPositionAgentY());
+                agent.setStartState(getGridValues()[agent.getStartPositionAgentX()][agent.getStartPositionAgentY()]);
+                agent.setCurrentState(agent.getStartState());
+                linkToAntennaMatrix[agent.getAgentName()].defineRangeAntennaWorld(gridWorld,walls);
+                linkToAntennaMatrix[agent.getAgentName()].gridRangeAntenna[x][y] = agent.getAgentName();
+                for (int i = 1; i<= Agents.maxSignal; i++){
+                    if(x-i >= 0)
+                        linkToAntennaMatrix[agent.getAgentName()].gridRangeAntenna[x-i][y] = agent.getAgentName(); //up
+                    if(x+i <= Agents.dimGridX - 1)
+                        linkToAntennaMatrix[agent.getAgentName()].gridRangeAntenna[x+i][y] = agent.getAgentName(); //down
+                    if (y-i >= 0)
+                        linkToAntennaMatrix[agent.getAgentName()].gridRangeAntenna[x][y-i] = agent.getAgentName(); //left
+                    if (y+i <= Agents.dimGridY - 1)
+                        linkToAntennaMatrix[agent.getAgentName()].gridRangeAntenna[x][y+i] = agent.getAgentName(); //right
+                }
+                break;
+            }
+        }
+        return gridW;
+    }
+
     public int[][] fillGridWorldAgents(Agents agent) {
-        int defineStartAgents = 0;
+        linkToAntennaMatrix[agent.getAgentName()].gridRangeAntenna[agent.getCurrentPositionX()][agent.getCurrentPositionY()] = ANTENNA;
+        getGridW()[agent.getCurrentPositionX()][agent.getCurrentPositionY()] = FREE_CELL;
+        for (int i = 1; i<= Agents.maxSignal; i++){
+            if(agent.getCurrentPositionX()-i >= 0)
+                linkToAntennaMatrix[agent.getAgentName()].gridRangeAntenna[agent.getCurrentPositionX()-i][agent.getCurrentPositionY()] = ANTENNA; //up
+            if(agent.getCurrentPositionX()+i <= Agents.dimGridX - 1)
+                linkToAntennaMatrix[agent.getAgentName()].gridRangeAntenna[agent.getCurrentPositionX()+i][agent.getCurrentPositionY()] = ANTENNA; //down
+            if (agent.getCurrentPositionY()-i >= 0)
+                linkToAntennaMatrix[agent.getAgentName()].gridRangeAntenna[agent.getCurrentPositionX()][agent.getCurrentPositionY()-i] = ANTENNA; //left
+            if (agent.getCurrentPositionY()+i <= Agents.dimGridY - 1)
+                linkToAntennaMatrix[agent.getAgentName()].gridRangeAntenna[agent.getCurrentPositionX()][agent.getCurrentPositionY()+i] = ANTENNA; //right
+        }
         while (true) {
             int x = (int) (0 + Math.random() * (xGrid - 1));
             int y = (int) (0 + Math.random() * (yGrid - 1));
-            if (gridW[x][y] == FREE_CELL && setFirstStartAgents == false) { // definisco per la prima volta la posizione dell'agente
-                if (defineStartAgents < Model.nNodes) {
-                    gridW[x][y] = AGENT_CELL;
-                    agent.setStartPositionAgentX(x);
-                    agent.setStartPositionAgentY(y);
-                    agent.setStartState(getGridValues()[agent.getStartPositionAgentX()][agent.getStartPositionAgentY()]);
-                    agent.setCurrentState(agent.getStartState());
-                    defineStartAgents++;
-                    previousStartX = agent.getStartPositionAgentX();
-                    previousStartY = agent.getStartPositionAgentY();
+            if (gridW[x][y] == FREE_CELL) {
+                gridW[x][y] = AGENT_CELL;
+                agent.setStartPositionAgentX(x);
+                agent.setStartPositionAgentY(y);
+                agent.setStartState(getGridValues()[agent.getStartPositionAgentX()][agent.getStartPositionAgentY()]);
+                agent.setCurrentPositionX(agent.getStartPositionAgentX());
+                agent.setCurrentPositionY(agent.getStartPositionAgentY());
+                agent.setCurrentState(agent.getStartState());
+                linkToAntennaMatrix[agent.getAgentName()].gridRangeAntenna[x][y] = agent.getAgentName();
+                for (int i = 1; i<= Agents.maxSignal; i++){
+                    if(x-i >= 0)
+                        linkToAntennaMatrix[agent.getAgentName()].gridRangeAntenna[x-i][y] = agent.getAgentName(); //up
+                    if(x+i <= Agents.dimGridX - 1)
+                        linkToAntennaMatrix[agent.getAgentName()].gridRangeAntenna[x+i][y] = agent.getAgentName(); //down
+                    if (y-i >= 0)
+                        linkToAntennaMatrix[agent.getAgentName()].gridRangeAntenna[x][y-i] = agent.getAgentName(); //left
+                    if (y+i <= Agents.dimGridY - 1)
+                        linkToAntennaMatrix[agent.getAgentName()].gridRangeAntenna[x][y+i] = agent.getAgentName(); //right
                 }
-                else  {
-                    setFirstStartAgents = true;
-                    break;
-                }
-            } else if (setFirstStartAgents == true) { // altrimenti la precedente posizione diventa una cella vuota e ne imposto un'altra --> il nuovo ciclo di training parte da qui
-                gridW[getPreviouStartX()][getPreviouStartY()] = FREE_CELL;
-                if (gridW[x][y] == FREE_CELL) {
-                    gridW[x][y] = AGENT_CELL;
-                    agent.setStartPositionAgentX(x);
-                    agent.setStartPositionAgentY(y);
-                    agent.setStartState(getGridValues()[agent.getStartPositionAgentX()][agent.getStartPositionAgentY()]);
-                    agent.setCurrentPositionX(agent.getStartPositionAgentX());
-                    agent.setCurrentPositionY(agent.getStartPositionAgentY());
-                    agent.setCurrentState(agent.getStartState());
-                    previousStartX = agent.getStartPositionAgentX();
-                    previousStartY = agent.getStartPositionAgentY();
-                    break;
-                }
-            } else continue;
-
+                break;
+            }
         }
         return gridW;
     }
@@ -137,11 +191,33 @@ public class GridWorld {
         return yGrid;
     }
 
-    private int getPreviouStartX() {
-        return previousStartX;
+    public int[][] getCopyGridW() { return copyGridW; }
+
+}
+
+class LinkToAntennaMatrix {
+
+    public int[][] gridRangeAntenna;
+
+    public LinkToAntennaMatrix() {
+        gridRangeAntenna = new int[Model.xGrid][Model.yGrid];
     }
 
-    private int getPreviouStartY() {
-        return previousStartY;
+
+    public void defineRangeAntennaWorld(GridWorld gridWorld,Walls walls){
+        for (int i = 0; i < gridWorld.getGridW().length; i++) {
+            for (int j = 0; j < gridWorld.getGridW()[0].length; j++) {
+                gridRangeAntenna[i][j] = gridWorld.ANTENNA;
+            }
+        }
+        for (int i = 0;i< walls.getWallsStatesPositions().length; i++){
+            gridRangeAntenna[walls.getWallPositionX()[i]][walls.getWallPositionY()[i]] = gridWorld.WALL_CELL;
+        }
+
     }
+
+    public int[][] getGridRangeAntenna() {
+        return gridRangeAntenna;
+    }
+
 }

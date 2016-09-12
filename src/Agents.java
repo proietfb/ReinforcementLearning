@@ -1,5 +1,3 @@
-import sun.management.Agent;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -10,6 +8,8 @@ public class Agents {
 
     public static final int maxSignal = 2;
     static int dimGridX, dimGridY;
+
+    private int agentName;
 
     private int statesCount;
 
@@ -23,9 +23,12 @@ public class Agents {
     private int nNeighbourDiscovered;
     private int nGoalDiscovered;
 
+    public boolean goalReached;
+
     Antenna antenna;
 
-    public Agents(int dimGridX, int dimGridY) {
+    public Agents(int agentName,int dimGridX, int dimGridY) {
+        this.agentName = agentName;
         this.dimGridX = dimGridX;
         this.dimGridY = dimGridY;
 
@@ -33,6 +36,7 @@ public class Agents {
         previousStates = new ArrayList<>();
         nNeighbourDiscovered = 0;
         nGoalDiscovered = 0;
+        goalReached = false;
         nodesStatesPositions = new int[Model.nNodes];
         antenna = new Antenna();
         Q = new double[statesCount][statesCount];
@@ -46,10 +50,10 @@ public class Agents {
     }
 
     public void searchNeighbours(GridWorld gridWorld){
-        antenna.discoverUP(gridWorld.getGridW(),getCurrentPositionX(),getCurrentPositionY(),maxSignal);
-        antenna.discoverDown(gridWorld.getGridW(),getCurrentPositionX(),getCurrentPositionY(),maxSignal);
-        antenna.discoverLeft(gridWorld.getGridW(),getCurrentPositionX(),getCurrentPositionY(),maxSignal);
-        antenna.discoverRight(gridWorld.getGridW(),getCurrentPositionX(),getCurrentPositionY(),maxSignal);
+        antenna.discoverUP(gridWorld.getCopyGridW(),getCurrentPositionX(),getCurrentPositionY(),maxSignal);
+        antenna.discoverDown(gridWorld.getCopyGridW(),getCurrentPositionX(),getCurrentPositionY(),maxSignal);
+        antenna.discoverLeft(gridWorld.getCopyGridW(),getCurrentPositionX(),getCurrentPositionY(),maxSignal);
+        antenna.discoverRight(gridWorld.getCopyGridW(),getCurrentPositionX(),getCurrentPositionY(),maxSignal);
     }
 
     public int getDimGridX() {
@@ -59,6 +63,8 @@ public class Agents {
     public int getDimGridY() {
         return dimGridY;
     }
+
+    public int getAgentName() {return agentName; }
 
     public int getStartPositionAgentX() {
         return startPositionAgentX;
