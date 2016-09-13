@@ -15,40 +15,38 @@ public class QLearning {
 
     private int[][] R;
 
-    public QLearning(Agents agent,Nodes[] nodes, Walls walls) {
+    public QLearning(Agents agent, Nodes[] nodes, Walls walls) {
         df = new DecimalFormat("#.##");
         R = new int[agent.getStatesCount()][agent.getStatesCount()];
         initR();
-        for(int i = 0 ;i<nodes.length;i++)
+        for (int i = 0; i < nodes.length; i++)
             initRewardNodes(nodes[i]);
         initRewardWalls(walls);
-
     }
 
-    private void initRewardWalls(Walls walls){
-
-        for(int i = 0; i< walls.getnOfWalls();i++){
-            if (walls.getWallsStatesPositions()[i] == 0){ //0,0
+    private void initRewardWalls(Walls walls) {
+        for (int i = 0; i < walls.getnOfWalls(); i++) {
+            if (walls.getWallsStatesPositions()[i] == 0) { //0,0
                 R[walls.getWallsStatesPositions()[i] + 1][walls.getWallsStatesPositions()[i]] = -10; // dx sx
                 R[walls.getWallsStatesPositions()[i] + Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -10; //basso alto
-            } else if (walls.getWallsStatesPositions()[i] == ((1*Agents.dimGridY)-1)) { //0,n
+            } else if (walls.getWallsStatesPositions()[i] == ((1 * Agents.dimGridY) - 1)) { //0,n
                 R[walls.getWallsStatesPositions()[i] - 1][walls.getWallsStatesPositions()[i]] = -10; //sx dx
                 R[walls.getWallsStatesPositions()[i] + Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -10; // basso alto
-            } else if (walls.getWallsStatesPositions()[i] == ((Agents.dimGridX*Agents.dimGridY)-Agents.dimGridX)) { //n,0
+            } else if (walls.getWallsStatesPositions()[i] == ((Agents.dimGridX * Agents.dimGridY) - Agents.dimGridX)) { //n,0
                 R[walls.getWallsStatesPositions()[i] + 1][walls.getWallsStatesPositions()[i]] = -10; // dx sx
                 R[walls.getWallsStatesPositions()[i] - Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -10; // alto basso
-            } else if (walls.getWallsStatesPositions()[i] == ((Agents.dimGridX*Agents.dimGridY) - 1)) { //n,n
+            } else if (walls.getWallsStatesPositions()[i] == ((Agents.dimGridX * Agents.dimGridY) - 1)) { //n,n
                 R[walls.getWallsStatesPositions()[i] - 1][walls.getWallsStatesPositions()[i]] = -10; //sx dx
                 R[walls.getWallsStatesPositions()[i] - Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -10; // alto basso
             } else if ((walls.getWallPositionX()[i] > 0 && walls.getWallPositionX()[i] < Agents.dimGridX - 1) && walls.getWallPositionY()[i] == 0) { //prima colonna
                 R[walls.getWallsStatesPositions()[i] - Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -10; // alto basso
                 R[walls.getWallsStatesPositions()[i] + 1][walls.getWallsStatesPositions()[i]] = -10; // dx sx
                 R[walls.getWallsStatesPositions()[i] + Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -10; // basso alto
-            } else if ((walls.getWallPositionX()[i] > 0 && walls.getWallPositionX()[i] < Agents.dimGridX - 1) && walls.getWallPositionY()[i] == Agents.dimGridY - 1){ //ultima colonna
+            } else if ((walls.getWallPositionX()[i] > 0 && walls.getWallPositionX()[i] < Agents.dimGridX - 1) && walls.getWallPositionY()[i] == Agents.dimGridY - 1) { //ultima colonna
                 R[walls.getWallsStatesPositions()[i] - Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -10; // alto basso
                 R[walls.getWallsStatesPositions()[i] - 1][walls.getWallsStatesPositions()[i]] = -10; //sx dx
                 R[walls.getWallsStatesPositions()[i] + Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -10; // basso alto
-            } else if (walls.getWallPositionX()[i] == 0 && (walls.getWallPositionY()[i] > 0 && walls.getWallPositionY()[i]< Agents.dimGridY - 1)){ //prima riga
+            } else if (walls.getWallPositionX()[i] == 0 && (walls.getWallPositionY()[i] > 0 && walls.getWallPositionY()[i] < Agents.dimGridY - 1)) { //prima riga
                 R[walls.getWallsStatesPositions()[i] - 1][walls.getWallsStatesPositions()[i]] = -10; //sx dx
                 R[walls.getWallsStatesPositions()[i] + 1][walls.getWallsStatesPositions()[i]] = -10; // dx sx
                 R[walls.getWallsStatesPositions()[i] + Agents.dimGridX][walls.getWallsStatesPositions()[i]] = -10; // basso alto
@@ -65,30 +63,29 @@ public class QLearning {
         }
     }
 
-    private void initR(){
+    private void initR() {
         for (int[] i : R) //inizializzo la matrice dei reward tutti a zero
             Arrays.fill(i, 0);
-    }
+        }
 
     private void initRewardNodes(Nodes node) { //definisce i reward massimi di base nelle posizioni accanto al goal
-
-        if (node.getPositionNodeX() == 0 && node.getPositionNodeY() == 0){ //se il punto finale è in 0,0, il reward viene dal basso verso l'alto e da dx verso sx
+        if (node.getPositionNodeX() == 0 && node.getPositionNodeY() == 0) { //se il punto finale è in 0,0, il reward viene dal basso verso l'alto e da dx verso sx
             R[node.getNodeCurrentState() + 1][node.getNodeCurrentState()] = 10; // dx sx
             R[node.getNodeCurrentState() + Agents.dimGridX][node.getNodeCurrentState()] = 10;  //basso alto
-        } else if (node.getPositionNodeX() == 0 && node.getPositionNodeY() == Agents.dimGridY-1) { //punto finale in 0,n il reward viene dal basso verso l'alto e da sx verso dx
+        } else if (node.getPositionNodeX() == 0 && node.getPositionNodeY() == Agents.dimGridY - 1) { //punto finale in 0,n il reward viene dal basso verso l'alto e da sx verso dx
             R[node.getNodeCurrentState() - 1][node.getNodeCurrentState()] = 10; //sx dx
             R[node.getNodeCurrentState() + Agents.dimGridX][node.getNodeCurrentState()] = 10; // basso alto
-        } else if (node.getPositionNodeX() == Agents.dimGridY - 1 && node.getPositionNodeY() == 0){ //punto finale in n,0 reward dall alto verso il basso e dadx verso sx
+        } else if (node.getPositionNodeX() == Agents.dimGridY - 1 && node.getPositionNodeY() == 0) { //punto finale in n,0 reward dall alto verso il basso e dadx verso sx
             R[node.getNodeCurrentState() - Agents.dimGridX][node.getNodeCurrentState()] = 10; // alto basso
             R[node.getNodeCurrentState() + 1][node.getNodeCurrentState()] = 10; //dx sx
-        } else if (node.getPositionNodeX() == Agents.dimGridY - 1 && node.getPositionNodeY() == Agents.dimGridY-1) { // punto finale in n,n reward dall alto verso il basso e da sx verso dx
+        } else if (node.getPositionNodeX() == Agents.dimGridY - 1 && node.getPositionNodeY() == Agents.dimGridY - 1) { // punto finale in n,n reward dall alto verso il basso e da sx verso dx
             R[node.getNodeCurrentState() - 1][node.getNodeCurrentState()] = 10; // sx dx
             R[node.getNodeCurrentState() - Agents.dimGridX][node.getNodeCurrentState()] = 10; // alto basso
-        } else if((node.getPositionNodeX() > 0 && node.getPositionNodeX() < Agents.dimGridX - 1) && node.getPositionNodeY() == 0){ //prima colonna
+        } else if ((node.getPositionNodeX() > 0 && node.getPositionNodeX() < Agents.dimGridX - 1) && node.getPositionNodeY() == 0) { //prima colonna
             R[node.getNodeCurrentState() - Agents.dimGridX][node.getNodeCurrentState()] = 10; //alto basso
-            R[node.getNodeCurrentState() + 1 ][node.getNodeCurrentState()] = 10; //dx sx
+            R[node.getNodeCurrentState() + 1][node.getNodeCurrentState()] = 10; //dx sx
             R[node.getNodeCurrentState() + Agents.dimGridX][node.getNodeCurrentState()] = 10;  //basso alto
-        } else if ((node.getPositionNodeX() > 0 && node.getPositionNodeX() < Agents.dimGridX - 1) && node.getPositionNodeY() == Agents.dimGridY - 1){ //ultima colonna
+        } else if ((node.getPositionNodeX() > 0 && node.getPositionNodeX() < Agents.dimGridX - 1) && node.getPositionNodeY() == Agents.dimGridY - 1) { //ultima colonna
             R[node.getNodeCurrentState() - Agents.dimGridX][node.getNodeCurrentState()] = 10; //alto basso
             R[node.getNodeCurrentState() - 1][node.getNodeCurrentState()] = 10; // sx dx
             R[node.getNodeCurrentState() + Agents.dimGridX][node.getNodeCurrentState()] = 10;  //basso alto
@@ -96,7 +93,7 @@ public class QLearning {
             R[node.getNodeCurrentState() - 1][node.getNodeCurrentState()] = 10; // sx dx
             R[node.getNodeCurrentState() + 1][node.getNodeCurrentState()] = 10; // dx sx
             R[node.getNodeCurrentState() + Agents.dimGridX][node.getNodeCurrentState()] = 10;  //basso alto
-        } else if (node.getPositionNodeX() == Agents.dimGridX - 1 && (node.getPositionNodeY() > 0 && node.getPositionNodeY() < Agents.dimGridY - 1)){ //ultima riga
+        } else if (node.getPositionNodeX() == Agents.dimGridX - 1 && (node.getPositionNodeY() > 0 && node.getPositionNodeY() < Agents.dimGridY - 1)) { //ultima riga
             R[node.getNodeCurrentState() - 1][node.getNodeCurrentState()] = 10; // sx dx
             R[node.getNodeCurrentState() + 1][node.getNodeCurrentState()] = 10; // dx sx
             R[node.getNodeCurrentState() - Agents.dimGridX][node.getNodeCurrentState()] = 10; //alto basso
@@ -110,10 +107,9 @@ public class QLearning {
     }
 
 
-
-    private double maxQ(States states,Agents agent, int state) {
+    private double maxQ(States states, Agents agent, int state) {
         int[] actionsFromNextState = new int[states.getDefinePossibleStates().get(state).size()];
-        listToArray(actionsFromNextState,states,state);
+        listToArray(actionsFromNextState, states, state);
         double maxVal = 0;
         for (int i = 0; i < actionsFromNextState.length; i++) {
             int nextState = actionsFromNextState[i];
@@ -124,14 +120,15 @@ public class QLearning {
         return maxVal;
     }
 
-    private int policyEpsilonGreedy(Agents agent, States state, int[] array){
+    private int policyEpsilonGreedy(Agents agent, States state, int[] array) {
         Random rand = new Random();
-        double epsilon = rand.nextDouble();;
+        double epsilon = rand.nextDouble();
+        ;
         double greedy = rand.nextDouble();
-       // System.out.println("Greedy Probability: " + greedy + "\n" + "Epsilon: " + epsilon);
+        // System.out.println("Greedy Probability: " + greedy + "\n" + "Epsilon: " + epsilon);
         double maxVal = 0;
         int policyGoToState = array[0];
-        if (greedy <= epsilon){
+        if (greedy <= epsilon) {
             for (int i = 0; i < state.getDefinePossibleStates().get(agent.getCurrentState()).size(); i++) {
                 int nextState = array[i];
                 double value = agent.getQ()[agent.getCurrentState()][nextState];
@@ -141,8 +138,7 @@ public class QLearning {
                 }
             }
             return policyGoToState;
-        }
-        else {
+        } else {
             int index = rand.nextInt(array.length);
             int action = array[index];
             return action;
@@ -161,7 +157,7 @@ public class QLearning {
                 policyGoToState = nextState;
             }
         }
-        if (maxVal == 0){
+        if (maxVal == 0) {
             int index = ran.nextInt(array.length);
             int action = array[index];
             return action;
@@ -169,19 +165,19 @@ public class QLearning {
             return policyGoToState;
     }
 
-    public void testQlearning(Agents agent, States states, GridWorld gridWorld){
+    public void testQlearning(Agents agent, States states, GridWorld gridWorld) {
         int state = agent.getCurrentState();
         int[] actionFromState = new int[states.getDefinePossibleStates().get(state).size()];
-        listToArray(actionFromState,states,state);
+        listToArray(actionFromState, states, state);
         //state = policyEpsilonGreedy(agent,states,actionFromState);
-        state = policyMaxNextVal(agent,states,actionFromState);
+        state = policyMaxNextVal(agent, states, actionFromState);
         updateCoordinates(agent, gridWorld, state);
         agent.previousStates.add(agent.getCurrentState());
         //System.out.println("mosse effettuate: " + agent.getPreviousStates());
         //System.out.println(agent +" mossa fatta");
         //printWorld(gridWorld);
         //System.out.println("state " + state + ": " + Arrays.deepToString(agent.antenna.getNeighbourDiscovered()));
-        for (int j=0; j<agent.nodesStatesPositions.length; j++) {
+        for (int j = 0; j < agent.nodesStatesPositions.length; j++) {
             if (state == agent.getNodesStatesPositions()[j]) {
                 agent.goalReached = true;
                 model.count++;
@@ -189,49 +185,49 @@ public class QLearning {
                 break;
             }
         }
-        if (agent.goalReached == false){
+        if (agent.goalReached == false) {
             for (int j = 0; j < agent.antenna.getNeighbourDiscovered().length; j++)
                 agent.antenna.neighbourDiscovered[j].clear();
             agent.searchNeighbours(gridWorld);
         }
     }
 
-    public void runMultiAgent(Agents agent, States states, GridWorld gridWorld){
+    public void runMultiAgent(Agents agent, States states, GridWorld gridWorld) {
         Random ran = new Random();
         for (int i = 0; i < 10; i++) {
             boolean loop = true;
             agent.previousStates.add(agent.getCurrentState());
             int state = agent.getCurrentState();
-                while (loop) {
-                    for (int j = 0; j < agent.nodesStatesPositions.length; j++) {
-                        if (state == agent.getNodesStatesPositions()[j]) {
-                            agent.previousStates.clear();
-                            gridWorld.fillGridWorldAgents(agent); //ad ogni ciclo ogni agente parte da uno stato iniziale random
-                            loop = false;
-                            break;
-                        }
-                    }
-                    if (loop == false)
+            while (loop) {
+                for (int j = 0; j < agent.nodesStatesPositions.length; j++) {
+                    if (state == agent.getNodesStatesPositions()[j]) {
+                        agent.previousStates.clear();
+                        gridWorld.fillGridWorldAgents(agent); //ad ogni ciclo ogni agente parte da uno stato iniziale random
+                        loop = false;
                         break;
-                    else {
-                        int[] actionsFromState = new int[states.getDefinePossibleStates().get(state).size()];
-                        listToArray(actionsFromState, states, state);
-                        int index = ran.nextInt(actionsFromState.length);
-                        int action = actionsFromState[index];
-                        int nextState = action;
-                        double q = agent.getQ()[state][action];
-                        double maxQ = maxQ(states, agent, nextState);
-                        int r = R[state][action];
-                        double value = q + alpha * (r + (gamma * maxQ) - q);
-                        agent.setQ(state, action, value);
-                        state = nextState;
-                        agent.setCurrentState(state);
-                        agent.previousStates.add(agent.getCurrentState());
                     }
                 }
+                if (loop == false)
+                    break;
+                else {
+                    int[] actionsFromState = new int[states.getDefinePossibleStates().get(state).size()];
+                    listToArray(actionsFromState, states, state);
+                    int index = ran.nextInt(actionsFromState.length);
+                    int action = actionsFromState[index];
+                    int nextState = action;
+                    double q = agent.getQ()[state][action];
+                    double maxQ = maxQ(states, agent, nextState);
+                    int r = R[state][action];
+                    double value = q + alpha * (r + (gamma * maxQ) - q);
+                    agent.setQ(state, action, value);
+                    state = nextState;
+                    agent.setCurrentState(state);
+                    agent.previousStates.add(agent.getCurrentState());
+                }
             }
-
         }
+
+    }
 
     private int[] listToArray(int[] ret, States state, int currentState) { //trasforma una lista in un array
         int i = 0;
@@ -241,23 +237,27 @@ public class QLearning {
         return ret;
     }
 
-    private void updateCoordinates(Agents agent, GridWorld gridWorld,int state){ //aggiorno ad ogni passo le mie coordinate
+    private void updateCoordinates(Agents agent, GridWorld gridWorld, int state) { //aggiorno ad ogni passo le mie coordinate
         int oldState = agent.getCurrentState();
         int oldStatePositionX = agent.getCurrentPositionX();
         int oldStatePositionY = agent.getCurrentPositionY();
         agent.setCurrentState(state);
         int newState = agent.getCurrentState();
 
-        if (oldState == newState - 1){ // spostamento dx
+        if (oldState == newState - 1) { // spostamento dx
             agent.setCurrentPositionY(agent.getCurrentPositionY() + 1);
+            gridWorld.updateRangeAntennaWorld(agent, oldStatePositionX, oldStatePositionY, agent.getCurrentPositionX(), agent.getCurrentPositionY());
         } else if (oldState == newState + 1) { //spostamento sx
             agent.setCurrentPositionY(agent.getCurrentPositionY() - 1);
+            gridWorld.updateRangeAntennaWorld(agent, oldStatePositionX, oldStatePositionY, agent.getCurrentPositionX(), agent.getCurrentPositionY());
         } else if (oldState == newState + Agents.dimGridX) { // spostamento alto
             agent.setCurrentPositionX(agent.getCurrentPositionX() - 1);
+            gridWorld.updateRangeAntennaWorld(agent, oldStatePositionX, oldStatePositionY, agent.getCurrentPositionX(), agent.getCurrentPositionY());
         } else { // spostamento basso
             agent.setCurrentPositionX(agent.getCurrentPositionX() + 1);
+            gridWorld.updateRangeAntennaWorld(agent, oldStatePositionX, oldStatePositionY, agent.getCurrentPositionX(), agent.getCurrentPositionY());
         }
-        updateAction(agent,gridWorld, oldStatePositionX,oldStatePositionY);
+        updateAction(agent, gridWorld, oldStatePositionX, oldStatePositionY);
     }
 
     public void updateAction(Agents agent, GridWorld gridWorld, int oldPositionX, int oldPositionY) {
@@ -265,14 +265,13 @@ public class QLearning {
         gridWorld.getCopyGridW()[agent.getCurrentPositionX()][agent.getCurrentPositionY()] = GridWorld.AGENT_CELL;
     }
 
-
     void printResult(Agents agent) {
         System.out.println("Print result");
         for (int i = 0; i < agent.getQ().length; i++) {
             System.out.print("i " + i + ":  ");
             for (int j = 0; j < agent.getQ()[i].length; j++) {
                 if (agent.getQ()[i][j] != 0)
-                    System.out.print("j " + j +": " + df.format(agent.getQ()[i][j]) + " ");
+                    System.out.print("j " + j + ": " + df.format(agent.getQ()[i][j]) + " ");
                 else
                     continue;
             }

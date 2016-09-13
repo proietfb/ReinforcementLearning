@@ -27,7 +27,7 @@ public class Agents {
 
     Antenna antenna;
 
-    public Agents(int agentName,int dimGridX, int dimGridY) {
+    public Agents(int agentName, int dimGridX, int dimGridY) {
         this.agentName = agentName;
         this.dimGridX = dimGridX;
         this.dimGridY = dimGridY;
@@ -49,11 +49,11 @@ public class Agents {
         }
     }
 
-    public void searchNeighbours(GridWorld gridWorld){
-        antenna.discoverUP(gridWorld.getCopyGridW(),getCurrentPositionX(),getCurrentPositionY(),maxSignal);
-        antenna.discoverDown(gridWorld.getCopyGridW(),getCurrentPositionX(),getCurrentPositionY(),maxSignal);
-        antenna.discoverLeft(gridWorld.getCopyGridW(),getCurrentPositionX(),getCurrentPositionY(),maxSignal);
-        antenna.discoverRight(gridWorld.getCopyGridW(),getCurrentPositionX(),getCurrentPositionY(),maxSignal);
+    public void searchNeighbours(GridWorld gridWorld) {
+        antenna.discoverUP(gridWorld.getCopyGridW(), getCurrentPositionX(), getCurrentPositionY(), maxSignal);
+        antenna.discoverDown(gridWorld.getCopyGridW(), getCurrentPositionX(), getCurrentPositionY(), maxSignal);
+        antenna.discoverLeft(gridWorld.getCopyGridW(), getCurrentPositionX(), getCurrentPositionY(), maxSignal);
+        antenna.discoverRight(gridWorld.getCopyGridW(), getCurrentPositionX(), getCurrentPositionY(), maxSignal);
     }
 
     public int getDimGridX() {
@@ -64,7 +64,9 @@ public class Agents {
         return dimGridY;
     }
 
-    public int getAgentName() {return agentName; }
+    public int getAgentName() {
+        return agentName;
+    }
 
     public int getStartPositionAgentX() {
         return startPositionAgentX;
@@ -130,7 +132,9 @@ public class Agents {
         this.startState = startState;
     }
 
-    public void setCurrentState(int currentState) {this.currentState = currentState;}
+    public void setCurrentState(int currentState) {
+        this.currentState = currentState;
+    }
 
     public void setnNeighbourDiscovered(int nNeighbourDiscovered) {
         this.nNeighbourDiscovered = nNeighbourDiscovered;

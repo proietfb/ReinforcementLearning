@@ -4,9 +4,9 @@ import java.util.concurrent.*;
 /**
  * Created by proietfb on 7/13/16.
  */
-public class Model{
+public class Model {
 
-    static int xGrid,yGrid,nOfWalls,nAgents, nNodes;
+    static int xGrid, yGrid, nOfWalls, nAgents, nNodes;
     Agents[] agents;
     Nodes[] nodes;
     GridWorld newWorld;
@@ -15,14 +15,15 @@ public class Model{
     QLearning q;
     static int count;
 
-    public Model() {}
+    public Model() {
+    }
 
     public void runModel() throws BrokenBarrierException, InterruptedException {
 
         xGrid = 7;
         yGrid = 7;
         nOfWalls = 10;
-        nAgents = 8;
+        nAgents = 2;
         nNodes = 2;
 
         newWorld = new GridWorld(xGrid, yGrid);
@@ -37,21 +38,21 @@ public class Model{
 
         state.defineStates(newWorld);
 
-        newWorld.fillGridWorldWalls(xGrid,yGrid,walls);
+        newWorld.fillGridWorldWalls(xGrid, yGrid, walls);
 
 
-
-        for (int i = 0; i < nodes.length; i++){
+        for (int i = 0; i < nodes.length; i++) {
             nodes[i] = new Nodes();
             newWorld.fillGridWorldNodes(nodes[i]);
         }
 
-        for (int i = 0; i < agents.length;i++){ // creo gli agenti, ogni agente conosce tutti gli obiettivi disponibili
-            agents[i] = new Agents(i,xGrid,yGrid);
-            newWorld.defineFirstAgentPositions(agents[i], newWorld,walls);
+        for (int i = 0; i < agents.length; i++) { // creo gli agenti, ogni agente conosce tutti gli obiettivi disponibili
+            agents[i] = new Agents(i, xGrid, yGrid);
+            newWorld.defineFirstAgentPositions(agents[i], newWorld, walls);
             System.out.println("agente " + i + " creato nello stato " + agents[i].getCurrentState());
             printWorld(newWorld);
-            for (int j=0; j< nodes.length;j++){
+            printRangeAntenna(newWorld);
+            for (int j = 0; j < nodes.length; j++) {
                 agents[i].nodesStatesPositions[j] = nodes[j].getNodeCurrentState();
             }
         }
@@ -65,51 +66,51 @@ public class Model{
 
         System.out.println("Fase di Learning da parte degli agenti iniziata");
 
-        for (int i = 0; i < nAgents; i++){
+        for (int i = 0; i < nAgents; i++) {
             q = new QLearning(agents[i], nodes, walls);
             q.runMultiAgent(agents[i], state, newWorld);
-            System.out.println("agent " + i+ ": " +agents[i].getCurrentState());
+            System.out.println("agent " + i + ": " + agents[i].getCurrentState());
         }
 
         System.out.println("Fase di Learning da parte degli agenti conclusa");
 
         System.out.println("Stato dell'ambiente alla fine della fase di Learning");
 
-        for (int i = 0; i< agents.length;i++)
-            System.out.println("stato dell'agente " + i + " " + agents[i].getCurrentState() );
+        for (int i = 0; i < agents.length; i++)
+            System.out.println("stato dell'agente " + i + " " + agents[i].getCurrentState());
         printWorld(newWorld);
 
         System.out.println("Inizio Fase di testing \n");
 
         count = 0;
-        while(true){
-            System.out.println(count);
-            if (count == nAgents){
+        while (true) {
+            if (count == nAgents) {
                 break;
             }
             newWorld.copyWorld();
             System.out.println("Copia dell'ambiene effettuata");
-            for (int i = 0; i < nAgents;i++){
-                if (agents[i].goalReached == false){
+            for (int i = 0; i < nAgents; i++) {
+                if (agents[i].goalReached == false) {
                     System.out.println(agents[i] + ": ho fatto la mossa");
                     q.testQlearning(agents[i], state, newWorld);
                     printCopyWorld(newWorld);
+                    printRangeAntennaCopy(newWorld);
                 }
             }
             System.out.println("Update dell'ambiente effettuata");
             newWorld.updateWorld();
+            for (int i = 0;i<nAgents;i++)
+                newWorld.copyRangeAntennaWorld(agents[i], newWorld);
         }
-
-
-
 
 
         long END = System.currentTimeMillis();
         System.out.println("Time: " + (END - BEGIN) / 1000.0 + " sec.");
-//        printCopyWorld(newWorld);
-//        System.out.println("\n");
-//        printWorld(newWorld);
-        printRangeAntenna(newWorld);
+        //printCopyWorld(newWorld);
+        //System.out.println("\n");
+        //printWorld(newWorld);
+        //printRangeAntenna(newWorld);
+        //printRangeAntennaCopy(newWorld);
     }
 
     public static void main(String args[]) throws BrokenBarrierException, InterruptedException {
@@ -155,11 +156,21 @@ public class Model{
             System.out.print("\n");
         }
     }
+
     private static void printRangeAntenna(GridWorld gridWorld) {
         System.out.println("ciao");
         for (int i = 0; i < gridWorld.linkToAntennaMatrix[0].getGridRangeAntenna().length; i++) {
             for (int j = 0; j < gridWorld.linkToAntennaMatrix[0].getGridRangeAntenna()[0].length; j++) {
                 System.out.print(gridWorld.linkToAntennaMatrix[0].getGridRangeAntenna()[i][j] + " ");
+            }
+            System.out.print("\n");
+        }
+    }
+    private static void printRangeAntennaCopy(GridWorld gridWorld) {
+        System.out.println("ciaoCopy");
+        for (int i = 0; i < gridWorld.linkToAntennaMatrix[0].getGridRangeAntennaCopy().length; i++) {
+            for (int j = 0; j < gridWorld.linkToAntennaMatrix[0].getGridRangeAntennaCopy()[0].length; j++) {
+                System.out.print(gridWorld.linkToAntennaMatrix[0].getGridRangeAntennaCopy()[i][j] + " ");
             }
             System.out.print("\n");
         }

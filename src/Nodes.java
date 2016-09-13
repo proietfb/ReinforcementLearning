@@ -7,7 +7,8 @@ public class Nodes {
 
     private int nodeCurrentState;
 
-    public Nodes() {}
+    public Nodes() {
+    }
 
     public int getPositionNodeX() {
         return positionNodeX;
