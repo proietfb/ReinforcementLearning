@@ -1,3 +1,4 @@
+import javax.jws.WebParam;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -14,7 +15,7 @@ public class Agents {
     private int statesCount;
 
     ArrayList<Integer> previousStates;
-    public int[] nodesStatesPositions;
+    public int[] nodesStatesPositions, nodesPositionsX, nodesPositionsY;
     private double[][] Q;
 
     private int startPositionAgentX, startPositionAgentY, currentPositionX, currentPositionY;
@@ -31,13 +32,14 @@ public class Agents {
         this.agentName = agentName;
         this.dimGridX = dimGridX;
         this.dimGridY = dimGridY;
-
         statesCount = getDimGridX() * getDimGridY();
         previousStates = new ArrayList<>();
         nNeighbourDiscovered = 0;
         nGoalDiscovered = 0;
         goalReached = false;
         nodesStatesPositions = new int[Model.nNodes];
+        nodesPositionsX = new int[Model.nNodes];
+        nodesPositionsY = new int[Model.nNodes];
         antenna = new Antenna();
         Q = new double[statesCount][statesCount];
         defineQ();
@@ -49,11 +51,14 @@ public class Agents {
         }
     }
 
-    public void searchNeighbours(GridWorld gridWorld) {
-        antenna.discoverUP(gridWorld.getCopyGridW(), getCurrentPositionX(), getCurrentPositionY(), maxSignal);
-        antenna.discoverDown(gridWorld.getCopyGridW(), getCurrentPositionX(), getCurrentPositionY(), maxSignal);
-        antenna.discoverLeft(gridWorld.getCopyGridW(), getCurrentPositionX(), getCurrentPositionY(), maxSignal);
-        antenna.discoverRight(gridWorld.getCopyGridW(), getCurrentPositionX(), getCurrentPositionY(), maxSignal);
+    public void searchNeighbours(GridWorld gridWorld, Agents agent) {
+        for (int i = 0; i < Model.nAgents; i++) {
+            antenna.discoverUP(gridWorld.getLinkToAntennaMatrix()[i].getGridRangeAntenna(), getCurrentPositionX(), getCurrentPositionY(), maxSignal, agent);
+            antenna.discoverDown(gridWorld.getLinkToAntennaMatrix()[i].getGridRangeAntenna(), getCurrentPositionX(), getCurrentPositionY(), maxSignal, agent);
+            antenna.discoverLeft(gridWorld.getLinkToAntennaMatrix()[i].getGridRangeAntenna(), getCurrentPositionX(), getCurrentPositionY(), maxSignal, agent);
+            antenna.discoverRight(gridWorld.getLinkToAntennaMatrix()[i].getGridRangeAntenna(), getCurrentPositionX(), getCurrentPositionY(), maxSignal, agent);
+        }
+        System.out.println(antenna.getNeighbourDiscovered());
     }
 
     public int getDimGridX() {

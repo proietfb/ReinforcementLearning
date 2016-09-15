@@ -224,6 +224,9 @@ public class GridWorld {
         return copyGridW;
     }
 
+    public LinkToAntennaMatrix[] getLinkToAntennaMatrix() {
+        return linkToAntennaMatrix;
+    }
 }
 
 class LinkToAntennaMatrix {
@@ -243,10 +246,10 @@ class LinkToAntennaMatrix {
                 gridRangeAntennaCopy[i][j] = gridWorld.ANTENNA;
             }
         }
-        for (int i = 0; i < walls.getWallsStatesPositions().length; i++) {
-            gridRangeAntenna[walls.getWallPositionX()[i]][walls.getWallPositionY()[i]] = gridWorld.WALL_CELL;
-            gridRangeAntennaCopy[walls.getWallPositionX()[i]][walls.getWallPositionY()[i]] = gridWorld.WALL_CELL;
-        }
+//        for (int i = 0; i < walls.getWallsStatesPositions().length; i++) {
+//            gridRangeAntenna[walls.getWallPositionX()[i]][walls.getWallPositionY()[i]] = gridWorld.WALL_CELL;
+//            gridRangeAntennaCopy[walls.getWallPositionX()[i]][walls.getWallPositionY()[i]] = gridWorld.WALL_CELL;
+//        }
     }
 
     public int[][] getGridRangeAntenna() {
@@ -256,4 +259,5 @@ class LinkToAntennaMatrix {
     public int[][] getGridRangeAntennaCopy() {
         return gridRangeAntennaCopy;
     }
+
 }

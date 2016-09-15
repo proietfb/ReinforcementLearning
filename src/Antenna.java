@@ -1,4 +1,6 @@
-import java.util.ArrayList;
+
+import java.lang.reflect.Array;
+import java.util.*;
 
 /**
  * Created by proietfb on 8/10/16.
@@ -11,79 +13,59 @@ public class Antenna {
     public static final int RIGHT = 3;
 
     private int powerTmp = 0;
-    public ArrayList<Integer>[] neighbourDiscovered;
+    public HashSet<Integer> neighbourDiscovered;
+
 
     public Antenna() {
-        neighbourDiscovered = new ArrayList[4];
-        for (int i = 0; i < neighbourDiscovered.length; i++)
-            neighbourDiscovered[i] = new ArrayList<>();
+        neighbourDiscovered = new HashSet<>();
     }
 
-    public void discoverUP(int[][] grid, int agentPositionX, int agentPositionY, int power) {
+    public void discoverUP(int[][] grid, int agentPositionX, int agentPositionY, int power, Agents agent) {
         for (int i = 0; i < power; i++) {
             powerTmp++;
             if (agentPositionX - powerTmp < 0)
                 break;
-            else
-                neighbourDiscovered[UP].add(grid[agentPositionX - powerTmp][agentPositionY]);
+            else if (grid[agentPositionX - powerTmp][agentPositionY] != GridWorld.ANTENNA && grid[agentPositionX - powerTmp][agentPositionY] != agent.getAgentName())
+                neighbourDiscovered.add(grid[agentPositionX - powerTmp][agentPositionY]);
         }
         powerTmp = 0;
-        for (int i = 0; i < neighbourDiscovered[UP].size(); i++) {
-            if (neighbourDiscovered[UP].get(i) == GridWorld.AGENT_CELL) {
-                System.out.println("ho trovato un vicino sopra di me a distanza " + (i + 1) + " mentre mi trovo allo stato (" + agentPositionX + ", " + agentPositionY + ")");
-            }
-        }
     }
 
-    public void discoverDown(int[][] grid, int agentPositionX, int agentPositionY, int power) {
+    public void discoverDown(int[][] grid, int agentPositionX, int agentPositionY, int power, Agents agent) {
         for (int i = 0; i < power; i++) {
             powerTmp++;
             if (agentPositionX + powerTmp > Agents.dimGridX - 1)
                 break;
-            else
-                neighbourDiscovered[DOWN].add(grid[agentPositionX + powerTmp][agentPositionY]);
+            else if (grid[agentPositionX + powerTmp][agentPositionY] != GridWorld.ANTENNA && grid[agentPositionX + powerTmp][agentPositionY] != agent.getAgentName())
+                neighbourDiscovered.add(grid[agentPositionX + powerTmp][agentPositionY]);
         }
         powerTmp = 0;
-        for (int i = 0; i < neighbourDiscovered[DOWN].size(); i++) {
-            if (neighbourDiscovered[DOWN].get(i) == GridWorld.AGENT_CELL) {
-                System.out.println("ho trovato un vicino sotto di me a distanza " + (i + 1) + " mentre mi trovo allo stato (" + agentPositionX + ", " + agentPositionY + ")");
-            }
-        }
     }
 
-    public void discoverLeft(int[][] grid, int agentPositionX, int agentPositionY, int power) {
+    public void discoverLeft(int[][] grid, int agentPositionX, int agentPositionY, int power, Agents agent) {
         for (int i = 0; i < power; i++) {
             powerTmp++;
             if (agentPositionY - powerTmp < 0)
                 break;
-            else
-                neighbourDiscovered[LEFT].add(grid[agentPositionX][agentPositionY - powerTmp]);
+            else if (grid[agentPositionX][agentPositionY - powerTmp] != GridWorld.ANTENNA && grid[agentPositionX][agentPositionY - powerTmp] != agent.getAgentName())
+                neighbourDiscovered.add(grid[agentPositionX][agentPositionY - powerTmp]);
         }
         powerTmp = 0;
-        for (int i = 0; i < neighbourDiscovered[LEFT].size(); i++) {
-            if (neighbourDiscovered[LEFT].get(i) == GridWorld.AGENT_CELL) {
-                System.out.println("ho trovato un vicino alla mia sinistra a distanza " + (i + 1) + " mentre mi trovo allo stato (" + agentPositionX + ", " + agentPositionY + ")");
-            }
-        }
     }
 
-    public void discoverRight(int[][] grid, int agentPositionX, int agentPositionY, int power) {
+    public void discoverRight(int[][] grid, int agentPositionX, int agentPositionY, int power, Agents agent) {
         for (int i = 0; i < power; i++) {
             powerTmp++;
             if (agentPositionY + powerTmp > Agents.dimGridY - 1)
                 break;
-            else
-                neighbourDiscovered[RIGHT].add(grid[agentPositionX][agentPositionY + powerTmp]);
+            else if (grid[agentPositionX][agentPositionY + powerTmp] != GridWorld.ANTENNA && grid[agentPositionX][agentPositionY + powerTmp] != agent.getAgentName())
+                neighbourDiscovered.add(grid[agentPositionX][agentPositionY + powerTmp]);
+
         }
         powerTmp = 0;
-        for (int i = 0; i < neighbourDiscovered[RIGHT].size(); i++) {
-            if (neighbourDiscovered[RIGHT].get(i) == GridWorld.AGENT_CELL) {
-                System.out.println("ho trovato un vicino alla mia destra a distanza " + (i + 1) + " mentre mi trovo allo stato (" + agentPositionX + ", " + agentPositionY + ")");
-            }
-        }
     }
 
-    public ArrayList<Integer>[] getNeighbourDiscovered() {
+    public HashSet<Integer> getNeighbourDiscovered() {
         return neighbourDiscovered;
     }
 }

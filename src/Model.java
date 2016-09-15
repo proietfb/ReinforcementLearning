@@ -23,8 +23,8 @@ public class Model {
         xGrid = 7;
         yGrid = 7;
         nOfWalls = 10;
-        nAgents = 2;
-        nNodes = 2;
+        nAgents = 4;
+        nNodes = 1;
 
         newWorld = new GridWorld(xGrid, yGrid);
         walls = new Walls(nOfWalls);
@@ -54,6 +54,8 @@ public class Model {
             printRangeAntenna(newWorld);
             for (int j = 0; j < nodes.length; j++) {
                 agents[i].nodesStatesPositions[j] = nodes[j].getNodeCurrentState();
+                agents[i].nodesPositionsX[j] = nodes[j].getPositionNodeX();
+                agents[i].nodesPositionsY[j] = nodes[j].getPositionNodeY();
             }
         }
 
@@ -78,7 +80,7 @@ public class Model {
 
         for (int i = 0; i < agents.length; i++)
             System.out.println("stato dell'agente " + i + " " + agents[i].getCurrentState());
-        printWorld(newWorld);
+        //printWorld(newWorld);
 
         System.out.println("Inizio Fase di testing \n");
 
@@ -91,12 +93,15 @@ public class Model {
             System.out.println("Copia dell'ambiene effettuata");
             for (int i = 0; i < nAgents; i++) {
                 if (agents[i].goalReached == false) {
-                    System.out.println(agents[i] + ": ho fatto la mossa");
-                    q.testQlearning(agents[i], state, newWorld);
-                    printCopyWorld(newWorld);
-                    printRangeAntennaCopy(newWorld);
+                    System.out.println(agents[i].getAgentName() + ": ho fatto la mossa");
+                    q.testQlearningCoop(agents[i],agents, state, newWorld);
+                    //printCopyWorld(newWorld);
+                    //printRangeAntennaCopy(newWorld);
+                    System.out.println("-------------------------------------------------------------------------------------");
                 }
+
             }
+            System.out.println("-------------------------------------------------------------------------------------");
             System.out.println("Update dell'ambiente effettuata");
             newWorld.updateWorld();
             for (int i = 0;i<nAgents;i++)
