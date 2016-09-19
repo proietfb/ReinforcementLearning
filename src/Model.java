@@ -1,5 +1,10 @@
+import org.jfree.ui.RefineryUtilities;
+
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.*;
+import java.util.concurrent.BrokenBarrierException;
+
 
 /**
  * Created by proietfb on 7/13/16.
@@ -7,6 +12,7 @@ import java.util.concurrent.*;
 public class Model {
 
     static int xGrid, yGrid, nOfWalls, nAgents, nNodes;
+    double nRun;
     Agents[] agents;
     Nodes[] nodes;
     GridWorld newWorld;
@@ -14,117 +20,166 @@ public class Model {
     States state;
     QLearning q;
     static int count;
+    int[] nMoves;
+    int[][] totalMoves;
+
+    long[] times;
+    long[][] totalTimes;
+
+    double[] meanMoves;
 
     public Model() {
     }
 
-    public void runModel() throws BrokenBarrierException, InterruptedException {
+    public double[] runModel(int nTrains) throws BrokenBarrierException, InterruptedException, IOException {
 
-        xGrid = 7;
-        yGrid = 7;
-        nOfWalls = 10;
-        nAgents = 4;
+        xGrid = 30;
+        yGrid = 30;
+        nOfWalls = 70;
+        nAgents = 1;
         nNodes = 1;
+        nRun = 50.;
 
-        newWorld = new GridWorld(xGrid, yGrid);
-        walls = new Walls(nOfWalls);
-        agents = new Agents[nAgents];
-        nodes = new Nodes[nNodes];
-        state = new States();
+        times = new long[nAgents];
+        totalTimes = new long[nAgents][1];
+        nMoves = new int[nAgents];
+        totalMoves = new int[nAgents][1]; //alla fine avrò la somma di tutte le mosse fatte durante tutti i run per raggiungere l'obiettivo
+        meanMoves = new double[nAgents];
 
-        newWorld.defineWorld();
+        for (int k = 0; k < (int)nRun; k++) {
 
-        newWorld.defineGridValues();
+            newWorld = new GridWorld(xGrid, yGrid);
+            walls = new Walls(nOfWalls);
+            agents = new Agents[nAgents];
+            nodes = new Nodes[nNodes];
+            state = new States();
 
-        state.defineStates(newWorld);
+            newWorld.defineWorld();
 
-        newWorld.fillGridWorldWalls(xGrid, yGrid, walls);
+            newWorld.defineGridValues();
+
+            state.defineStates(newWorld);
+
+            newWorld.fillGridWorldWalls(xGrid, yGrid, walls);
 
 
-        for (int i = 0; i < nodes.length; i++) {
-            nodes[i] = new Nodes();
-            newWorld.fillGridWorldNodes(nodes[i]);
-        }
-
-        for (int i = 0; i < agents.length; i++) { // creo gli agenti, ogni agente conosce tutti gli obiettivi disponibili
-            agents[i] = new Agents(i, xGrid, yGrid);
-            newWorld.defineFirstAgentPositions(agents[i], newWorld, walls);
-            System.out.println("agente " + i + " creato nello stato " + agents[i].getCurrentState());
-            printWorld(newWorld);
-            printRangeAntenna(newWorld);
-            for (int j = 0; j < nodes.length; j++) {
-                agents[i].nodesStatesPositions[j] = nodes[j].getNodeCurrentState();
-                agents[i].nodesPositionsX[j] = nodes[j].getPositionNodeX();
-                agents[i].nodesPositionsY[j] = nodes[j].getPositionNodeY();
+            for (int i = 0; i < nodes.length; i++) {
+                nodes[i] = new Nodes();
+                newWorld.fillGridWorldNodes(nodes[i]);
             }
-        }
-
-        System.out.println(Arrays.deepToString(newWorld.getGridValues()) + "\n");
-
-        System.out.println("obiettivi creati: " + Arrays.toString(agents[0].nodesStatesPositions));
-
-        long BEGIN = System.currentTimeMillis();
-
-
-        System.out.println("Fase di Learning da parte degli agenti iniziata");
-
-        for (int i = 0; i < nAgents; i++) {
-            q = new QLearning(agents[i], nodes, walls);
-            q.runMultiAgent(agents[i], state, newWorld);
-            System.out.println("agent " + i + ": " + agents[i].getCurrentState());
-        }
-
-        System.out.println("Fase di Learning da parte degli agenti conclusa");
-
-        System.out.println("Stato dell'ambiente alla fine della fase di Learning");
-
-        for (int i = 0; i < agents.length; i++)
-            System.out.println("stato dell'agente " + i + " " + agents[i].getCurrentState());
-        //printWorld(newWorld);
-
-        System.out.println("Inizio Fase di testing \n");
-
-        count = 0;
-        while (true) {
-            if (count == nAgents) {
-                break;
-            }
-            newWorld.copyWorld();
-            System.out.println("Copia dell'ambiene effettuata");
-            for (int i = 0; i < nAgents; i++) {
-                if (agents[i].goalReached == false) {
-                    System.out.println(agents[i].getAgentName() + ": ho fatto la mossa");
-                    q.testQlearningCoop(agents[i],agents, state, newWorld);
-                    //printCopyWorld(newWorld);
-                    //printRangeAntennaCopy(newWorld);
-                    System.out.println("-------------------------------------------------------------------------------------");
+            System.out.println("DEBUG " + k);
+            for (int i = 0; i < agents.length; i++) { // creo gli agenti, ogni agente conosce tutti gli obiettivi disponibili
+                agents[i] = new Agents(i, xGrid, yGrid);
+                newWorld.defineFirstAgentPositions(agents[i], newWorld, walls);
+                System.out.println("agente " + i + " creato nello stato " + agents[i].getCurrentState());
+                for (int j = 0; j < nodes.length; j++) {
+                    agents[i].nodesStatesPositions[j] = nodes[j].getNodeCurrentState();
+                    agents[i].nodesPositionsX[j] = nodes[j].getPositionNodeX();
+                    agents[i].nodesPositionsY[j] = nodes[j].getPositionNodeY();
                 }
-
             }
-            System.out.println("-------------------------------------------------------------------------------------");
-            System.out.println("Update dell'ambiente effettuata");
-            newWorld.updateWorld();
-            for (int i = 0;i<nAgents;i++)
-                newWorld.copyRangeAntennaWorld(agents[i], newWorld);
+
+            System.out.println(Arrays.deepToString(newWorld.getGridValues()) + "\n");
+
+            System.out.println("obiettivi creati: " + Arrays.toString(agents[0].nodesStatesPositions));
+
+            long BEGIN, END;
+
+            System.out.println("Fase di Learning da parte degli agenti iniziata");
+
+            for (int i = 0; i < nAgents; i++) {
+                q = new QLearning(agents[i], nodes, walls);
+                q.runMultiAgent(agents[i], state, newWorld, nTrains);
+                System.out.println("agent " + i + ": " + agents[i].getCurrentState());
+            }
+
+            System.out.println("Fase di Learning da parte degli agenti conclusa");
+
+            System.out.println("Stato dell'ambiente alla fine della fase di Learning");
+
+            for (int i = 0; i < agents.length; i++)
+                System.out.println("stato dell'agente " + i + " " + agents[i].getCurrentState());
+            //printWorld(newWorld);
+
+            System.out.println("Inizio Fase di testing \n");
+
+            count = 0;
+            while (true) {
+                if (count == nAgents) {
+                    break;
+                }
+                newWorld.copyWorld();
+                System.out.println("Copia dell'ambiene effettuata");
+                for (int i = 0; i < nAgents; i++) {
+                    if (agents[i].goalReached == false) {
+                        BEGIN = System.nanoTime();
+                        System.out.println(agents[i].getAgentName() + ": ho fatto la mossa");
+                        q.testQlearning(agents[i], agents, state, newWorld);
+                        nMoves[i]++;
+                        END = System.nanoTime();
+                        times[i] = END-BEGIN;
+                        System.out.println("-------------------------------------------------------------------------------------");
+                    }
+                }
+                System.out.println("-------------------------------------------------------------------------------------");
+                newWorld.updateWorld();
+                System.out.println("Update dell'ambiente effettuata");
+
+                for (int j = 0; j < nAgents; j++)
+                    newWorld.copyRangeAntennaWorld(agents[j], newWorld);
+            }
+
+            for (int i = 0;i<nAgents;i++) {
+                totalTimes[i][0] += times[i];
+                totalMoves[i][0] += nMoves[i];
+                nMoves[i] = 0;
+                times[i] = 0;
+            }
+            for (int i = 0;i<meanMoves.length;i++){
+                meanMoves[i] = totalMoves[i][0]/nRun;
+                System.out.println(meanMoves[i]);
+            }
+
+
+        }
+        int sum = 0;
+        for (int i = 0;i<totalTimes.length;i++)
+            sum += totalTimes[i][0];
+
+        System.out.println("TotalTime: " + sum / 1000000000.0 + " sec.");
+
+        for (int i = 0;i<nAgents;i++) {
+            System.out.println("TotalMoves dell'agente: " + i + ": " + totalMoves[i][0]);
+            System.out.println("TotalTimes dell'agente: " + i + ": " + totalTimes[i][0]);
         }
 
+        return meanMoves;
 
-        long END = System.currentTimeMillis();
-        System.out.println("Time: " + (END - BEGIN) / 1000.0 + " sec.");
-        //printCopyWorld(newWorld);
-        //System.out.println("\n");
-        //printWorld(newWorld);
-        //printRangeAntenna(newWorld);
-        //printRangeAntennaCopy(newWorld);
     }
 
-    public static void main(String args[]) throws BrokenBarrierException, InterruptedException {
-        new Model().runModel();
-    }
 
+
+
+    public static void main(String args[]) throws BrokenBarrierException, InterruptedException, IOException {
+        ArrayList<double[]> outputRunsNMoves = new ArrayList<>();
+        int[] nTrains = new int[10];
+        int step = 500;
+        for (int i =0;i<nTrains.length;i++) {
+            nTrains[i] = step;
+            step +=50;
+        }
+        for (int i = 0; i<nTrains.length;i++) {
+            outputRunsNMoves.add(new Model().runModel(nTrains[i]));
+        }
+        Graphics chart = new Graphics("Individual Graphic", "maxNextInt policy",outputRunsNMoves,nTrains);
+        chart.pack();
+        RefineryUtilities.centerFrameOnScreen(chart);
+        chart.setVisible(true);
+
+
+    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
     private static void printWorld(GridWorld gridWorld) {
         for (int i = 0; i < gridWorld.getGridW().length; i++) {
@@ -171,6 +226,7 @@ public class Model {
             System.out.print("\n");
         }
     }
+
     private static void printRangeAntennaCopy(GridWorld gridWorld) {
         System.out.println("ciaoCopy");
         for (int i = 0; i < gridWorld.linkToAntennaMatrix[0].getGridRangeAntennaCopy().length; i++) {

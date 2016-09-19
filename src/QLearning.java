@@ -1,5 +1,3 @@
-import sun.management.Agent;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -148,14 +146,14 @@ public class QLearning {
             return stateQ;
     }
 
-    private int policyEpsilonGreedy(Agents agent, States state, int[] array) {
+    private double[] policyEpsilonGreedy(Agents agent, States state, int[] array) {
         Random rand = new Random();
         double epsilon = rand.nextDouble();
-        ;
         double greedy = rand.nextDouble();
         // System.out.println("Greedy Probability: " + greedy + "\n" + "Epsilon: " + epsilon);
         double maxVal = 0;
-        int policyGoToState = array[0];
+        double[] stateQ = new double[2];
+        int policyGoToState;
         if (greedy <= epsilon) {
             for (int i = 0; i < state.getDefinePossibleStates().get(agent.getCurrentState()).size(); i++) {
                 int nextState = array[i];
@@ -163,13 +161,62 @@ public class QLearning {
                 if (value > maxVal) {
                     maxVal = value;
                     policyGoToState = nextState;
+                    stateQ[0] = policyGoToState;
+                    stateQ[1] = maxVal;
                 }
             }
-            return policyGoToState;
+            if (maxVal == 0) {
+                int index = rand.nextInt(array.length);
+                int action = array[index];
+                stateQ[0] = action;
+                stateQ[1] = maxVal;
+                return stateQ;
+            }
+            else
+                return stateQ;
         } else {
             int index = rand.nextInt(array.length);
             int action = array[index];
-            return action;
+            stateQ[0] = action;
+            stateQ[1] = agent.getQ()[agent.getCurrentState()][action];
+            return stateQ;
+        }
+    }
+
+    private double[] policyEpsilonGreedyCoop(Agents[] agentses, Agents agent, States state, int[] array, int name) {
+        Random rand = new Random();
+        double epsilon = rand.nextDouble();
+        double greedy = rand.nextDouble();
+        // System.out.println("Greedy Probability: " + greedy + "\n" + "Epsilon: " + epsilon);
+        double maxVal = 0;
+        double[] stateQ = new double[2];
+        int policyGoToState;
+        if (greedy <= epsilon) {
+            for (int i = 0; i < state.getDefinePossibleStates().get(agent.getCurrentState()).size(); i++) {
+                int nextState = array[i];
+                double value = agentses[name].getQ()[agent.getCurrentState()][nextState];
+                if (value > maxVal) {
+                    maxVal = value;
+                    policyGoToState = nextState;
+                    stateQ[0] = policyGoToState;
+                    stateQ[1] = maxVal;
+                }
+            }
+            if (maxVal == 0) {
+                int index = rand.nextInt(array.length);
+                int action = array[index];
+                stateQ[0] = action;
+                stateQ[1] = maxVal;
+                return stateQ;
+            }
+            else
+                return stateQ;
+        } else { //scelgo una mossa random tra le possibili
+            int index = rand.nextInt(array.length);
+            int action = array[index];
+            stateQ[0] = action;
+            stateQ[1] = agent.getQ()[agent.getCurrentState()][action];
+            return stateQ;
         }
     }
 
@@ -177,7 +224,7 @@ public class QLearning {
         Random ran = new Random();
         double maxVal = 0;
         double[] stateQ = new double[2];
-        int policyGoToState = array[ran.nextInt(array.length)];
+        int policyGoToState;
         for (int i = 0; i < state.getDefinePossibleStates().get(agent.getCurrentState()).size(); i++) {
             int nextState = array[i];
             double value = agent.getQ()[agent.getCurrentState()][nextState];
@@ -249,11 +296,8 @@ public class QLearning {
             }
         }
         System.out.println("Vado in: " +state);
-        updateCoordinates(agent, gridWorld,(int) state);
+        updateCoordinates(agent, gridWorld, state);
         agent.previousStates.add(agent.getCurrentState());
-        //System.out.println("mosse effettuate: " + agent.getPreviousStates());
-        //System.out.println(agent +" mossa fatta");
-        //printWorld(gridWorld);
         for (int j = 0; j < agent.nodesStatesPositions.length; j++) {
             if (state == agent.getNodesStatesPositions()[j]) {
                 agent.goalReached = true;
@@ -268,19 +312,11 @@ public class QLearning {
     public void testQlearning(Agents agent,Agents[] agentses ,States states, GridWorld gridWorld) {
         int state = agent.getCurrentState();
         int[] actionFromState = new int[states.getDefinePossibleStates().get(state).size()];
-        int[] bestActionsFromOtherAgents = new int[states.getDefinePossibleStates().get(state).size()];
         listToArray(actionFromState, states, state);
-        //state = policyEpsilonGreedy(agent,states,actionFromState);
-        if (agent.goalReached == false) {
-            agent.antenna.neighbourDiscovered.clear();
-            agent.searchNeighbours(gridWorld, agent);
-        }
+        //state = (int) policyEpsilonGreedy(agent,states,actionFromState)[0];
         state = (int) policyMaxNextVal(agent, states, actionFromState)[0];
         updateCoordinates(agent, gridWorld, state);
         agent.previousStates.add(agent.getCurrentState());
-        //System.out.println("mosse effettuate: " + agent.getPreviousStates());
-        //System.out.println(agent +" mossa fatta");
-        //printWorld(gridWorld);
         for (int j = 0; j < agent.nodesStatesPositions.length; j++) {
             if (state == agent.getNodesStatesPositions()[j]) {
                 agent.goalReached = true;
@@ -291,9 +327,9 @@ public class QLearning {
         }
     }
 
-    public void runMultiAgent(Agents agent, States states, GridWorld gridWorld) {
+    public void runMultiAgent(Agents agent, States states, GridWorld gridWorld, int nTrains) {
         Random ran = new Random();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < nTrains; i++) {
             boolean loop = true;
             agent.previousStates.add(agent.getCurrentState());
             int state = agent.getCurrentState();
