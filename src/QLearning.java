@@ -9,8 +9,8 @@ import java.util.Random;
 public class QLearning {
 
     final DecimalFormat df;
-    double alpha = 0.1;
-    double gamma = 0.9;
+    double alpha = 0.2;
+    double gamma = 0.8;
 
     Model model;
 
@@ -23,6 +23,15 @@ public class QLearning {
         for (int i = 0; i < nodes.length; i++)
             initRewardNodes(nodes[i]);
         initRewardWalls(walls);
+    }
+
+    public static void printWorld(GridWorld gridWorld) {
+        for (int i = 0; i < gridWorld.getGridW().length; i++) {
+            for (int j = 0; j < gridWorld.getGridW()[0].length; j++) {
+                System.out.print(gridWorld.getGridW()[i][j] + " ");
+            }
+            System.out.print("\n");
+        }
     }
 
     private void initRewardWalls(Walls walls) {
@@ -107,7 +116,6 @@ public class QLearning {
 
     }
 
-
     private double maxQ(States states, Agents agent, int state) {
         int[] actionsFromNextState = new int[states.getDefinePossibleStates().get(state).size()];
         listToArray(actionsFromNextState, states, state);
@@ -119,6 +127,49 @@ public class QLearning {
                 maxVal = value;
         }
         return maxVal;
+    }
+
+    private int checkValueMax(ArrayList<Double> arrayList){ // confrontando il valore Q corrispondente, ritorna la posizione della lista dove si trova il valore Q maggiore
+        double valueCheck = arrayList.get(1);
+        int position = 1;
+        if (arrayList.size() > 2){
+            for (int i = 3; i<arrayList.size();i++){
+                if (i%2!= 0){
+                    if (arrayList.get(i) > valueCheck) {
+                        valueCheck = arrayList.get(i);
+                        position +=2;
+                    }
+                }
+            }
+            return position;
+        }
+        else
+            return position;
+    }
+
+    private double[] policyMaxNextVal(Agents agent, States state, int[] array) {
+        Random ran = new Random();
+        double maxVal = 0;
+        double[] stateQ = new double[2];
+        int policyGoToState;
+        for (int i = 0; i < state.getDefinePossibleStates().get(agent.getCurrentState()).size(); i++) {
+            int nextState = array[i];
+            double value = agent.getQ()[agent.getCurrentState()][nextState];
+            if (value > maxVal) {
+                maxVal = value;
+                policyGoToState = nextState;
+                stateQ[0] = policyGoToState;
+                stateQ[1] = maxVal;
+            }
+        }
+        if (maxVal == 0) {
+            int index = ran.nextInt(array.length);
+            int action = array[index];
+            stateQ[0] = action;
+            stateQ[1] = maxVal;
+            return stateQ;
+        } else
+            return stateQ;
     }
 
     private double[] policyCoopAgentsMaxNextVal (Agents[] agenteses, Agents agent, States state, int[] array, int name){
@@ -146,9 +197,9 @@ public class QLearning {
             return stateQ;
     }
 
-    private double[] policyEpsilonGreedy(Agents agent, States state, int[] array) {
+    private double[] policyEpsilonGreedy(Agents agent, States state, int[] array, double epsilonValue) {
         Random rand = new Random();
-        double epsilon = rand.nextDouble();
+        double epsilon = epsilonValue;
         double greedy = rand.nextDouble();
         // System.out.println("Greedy Probability: " + greedy + "\n" + "Epsilon: " + epsilon);
         double maxVal = 0;
@@ -183,9 +234,9 @@ public class QLearning {
         }
     }
 
-    private double[] policyEpsilonGreedyCoop(Agents[] agentses, Agents agent, States state, int[] array, int name) {
+    private double[] policyEpsilonGreedyCoop(Agents[] agentses, Agents agent, States state, int[] array, int name, double epsilonValue) {
         Random rand = new Random();
-        double epsilon = rand.nextDouble();
+        double epsilon = epsilonValue;
         double greedy = rand.nextDouble();
         // System.out.println("Greedy Probability: " + greedy + "\n" + "Epsilon: " + epsilon);
         double maxVal = 0;
@@ -220,50 +271,18 @@ public class QLearning {
         }
     }
 
-    private double[] policyMaxNextVal(Agents agent, States state, int[] array) {
-        Random ran = new Random();
-        double maxVal = 0;
-        double[] stateQ = new double[2];
-        int policyGoToState;
-        for (int i = 0; i < state.getDefinePossibleStates().get(agent.getCurrentState()).size(); i++) {
-            int nextState = array[i];
-            double value = agent.getQ()[agent.getCurrentState()][nextState];
-            if (value > maxVal) {
-                maxVal = value;
-                policyGoToState = nextState;
-                stateQ[0] = policyGoToState;
-                stateQ[1] = maxVal;
-            }
-        }
-        if (maxVal == 0) {
-            int index = ran.nextInt(array.length);
-            int action = array[index];
-            stateQ[0] = action;
-            stateQ[1] = maxVal;
-            return stateQ;
-        } else
-            return stateQ;
-    }
+    private int policyTruthCoop (double[] tmpCurrentAgent, int pos, ArrayList<Double> arrayList, double epsilonValue){ // politica basata su un valore di verità, che definisce la mossa da scegliere
+        Random rand = new Random();
+        double epsilon = epsilonValue;
+        double greedy = rand.nextDouble();
 
-    private int checkValueMax(ArrayList<Double> arrayList){ // confrontando il valore Q corrispondente, ritorna la posizione della lista dove si trova il valore Q maggiore
-        double valueCheck = arrayList.get(1);
-        int position = 1;
-        if (arrayList.size() > 2){
-            for (int i = 3; i<arrayList.size();i++){
-                if (i%2!= 0){
-                    if (arrayList.get(i) > valueCheck) {
-                        valueCheck = arrayList.get(i);
-                        position +=2;
-                    }
-                }
-            }
-            return position;
-        }
+        if (greedy <= epsilon)
+             return arrayList.get(pos - 1).intValue();
         else
-            return position;
+            return (int) tmpCurrentAgent[0];
     }
 
-    public void testQlearningCoop(Agents agent,Agents[] agentses ,States states, GridWorld gridWorld) {
+    public void testQlearningCoop(Agents agent,Agents[] agentses ,States states, GridWorld gridWorld, String typePolicy, double epsilonValue) {
         int state = agent.getCurrentState();
         int[] actionFromState = new int[states.getDefinePossibleStates().get(state).size()];
         listToArray(actionFromState, states, state);
@@ -276,52 +295,89 @@ public class QLearning {
                 ArrayList<Double> stateTMP = new ArrayList<>();
                 double[] tmpOtherAgents, tmpCurrentAgent;
                 for (int i = 0; i < convertHashSet.size(); i++) {
-                    tmpOtherAgents = policyCoopAgentsMaxNextVal(agentses, agent, states, actionFromState, convertHashSet.get(i));
-                    stateTMP.add(tmpOtherAgents[0]);
-                    stateTMP.add(tmpOtherAgents[1]);
+                    if (typePolicy == "maxCoop") {
+                        tmpOtherAgents = policyCoopAgentsMaxNextVal(agentses, agent, states, actionFromState, convertHashSet.get(i));
+                        stateTMP.add(tmpOtherAgents[0]);
+                        stateTMP.add(tmpOtherAgents[1]);
+                    }
+                    else if (typePolicy == "epsilonCoop"){
+                        tmpOtherAgents = policyEpsilonGreedyCoop(agentses, agent, states, actionFromState, convertHashSet.get(i),epsilonValue);
+                        stateTMP.add(tmpOtherAgents[0]);
+                        stateTMP.add(tmpOtherAgents[1]);
+                    } else if (typePolicy == "truthPolicy") {
+                        tmpOtherAgents = policyCoopAgentsMaxNextVal(agentses, agent, states, actionFromState, convertHashSet.get(i));
+                        stateTMP.add(tmpOtherAgents[0]);
+                        stateTMP.add(tmpOtherAgents[1]);
+                    }
+
                 }
                 int pos = checkValueMax(stateTMP);
-                tmpCurrentAgent = policyMaxNextVal(agent, states, actionFromState);
-                if (tmpCurrentAgent[1] > stateTMP.get(pos)) {
-                    state = (int) tmpCurrentAgent[0];
-                } else {
-                    state = stateTMP.get(pos - 1).intValue();
-                    System.out.println("destinazione di altri agenti: " +state);
-                }
 
+                if (typePolicy == "maxCoop") {
+                    tmpCurrentAgent = policyMaxNextVal(agent, states, actionFromState);
+                    if (tmpCurrentAgent[1] > stateTMP.get(pos)) {
+                        state = (int) tmpCurrentAgent[0];
+                    } else {
+                        state = stateTMP.get(pos - 1).intValue();
+                        //System.out.println("destinazione di altri agenti: " +state);
+                    }
+                }
+                else if (typePolicy == "epsilonCoop") {
+                    tmpCurrentAgent = policyEpsilonGreedy(agent, states, actionFromState, epsilonValue);
+                    if (tmpCurrentAgent[1] > stateTMP.get(pos)) {
+                        state = (int) tmpCurrentAgent[0];
+                    } else {
+                        state = stateTMP.get(pos - 1).intValue();
+                        //System.out.println("destinazione di altri agenti: " +state);
+                    }
+                } else if (typePolicy == "truthPolicy") {
+
+                    tmpCurrentAgent = policyMaxNextVal(agent, states, actionFromState);
+
+                    state = policyTruthCoop(tmpCurrentAgent,pos,stateTMP, epsilonValue);
+
+                }
             }
             else {
-                state = (int) policyMaxNextVal(agent, states, actionFromState)[0];
-                System.out.println("Stato calcolato dall'agente corrente: " +state);
+                if (typePolicy == "maxCoop")
+                    state = (int) policyMaxNextVal(agent, states, actionFromState)[0];
+                else if (typePolicy == "epsilonCoop")
+                    state = (int) policyEpsilonGreedy(agent, states, actionFromState, epsilonValue)[0];
+                //System.out.println("Stato calcolato dall'agente corrente: " +state);
+                else if (typePolicy == "truthPolicy"){
+                    state = (int) policyMaxNextVal(agent, states, actionFromState)[0];
+                }
             }
         }
-        System.out.println("Vado in: " +state);
+        //System.out.println("Vado in: " +state);
         updateCoordinates(agent, gridWorld, state);
         agent.previousStates.add(agent.getCurrentState());
         for (int j = 0; j < agent.nodesStatesPositions.length; j++) {
             if (state == agent.getNodesStatesPositions()[j]) {
                 agent.goalReached = true;
                 model.count++;
-                System.out.println("Sono l'agente " + agent.getAgentName() + " ed ho raggiunto l'obiettivo " + state);
-                System.out.println("la lista delle mie mosse è: " + agent.getPreviousStates());
+                //System.out.println("Sono l'agente " + agent.getAgentName() + " ed ho raggiunto l'obiettivo " + state);
+                //System.out.println("la lista delle mie mosse è: " + agent.getPreviousStates());
                 break;
             }
         }
     }
 
-    public void testQlearning(Agents agent,Agents[] agentses ,States states, GridWorld gridWorld) {
+    public void testQlearning(Agents agent,Agents[] agentses ,States states, GridWorld gridWorld, String test, double epsilonValue) {
         int state = agent.getCurrentState();
         int[] actionFromState = new int[states.getDefinePossibleStates().get(state).size()];
         listToArray(actionFromState, states, state);
-        //state = (int) policyEpsilonGreedy(agent,states,actionFromState)[0];
-        state = (int) policyMaxNextVal(agent, states, actionFromState)[0];
+        if (test == "epsilon")
+            state = (int) policyEpsilonGreedy(agent,states,actionFromState, epsilonValue)[0];
+        else if (test == "max")
+            state = (int) policyMaxNextVal(agent, states, actionFromState)[0];
         updateCoordinates(agent, gridWorld, state);
         agent.previousStates.add(agent.getCurrentState());
         for (int j = 0; j < agent.nodesStatesPositions.length; j++) {
             if (state == agent.getNodesStatesPositions()[j]) {
                 agent.goalReached = true;
                 model.count++;
-                System.out.println("Sono l'agente " + agent.getAgentName() + " ed ho raggiunto l'obiettivo " + state);
+                //System.out.println("Sono l'agente " + agent.getAgentName() + " ed ho raggiunto l'obiettivo " + state);
                 break;
             }
         }
@@ -411,15 +467,6 @@ public class QLearning {
                     continue;
             }
             System.out.println("\n");
-        }
-    }
-
-    public static void printWorld(GridWorld gridWorld) {
-        for (int i = 0; i < gridWorld.getGridW().length; i++) {
-            for (int j = 0; j < gridWorld.getGridW()[0].length; j++) {
-                System.out.print(gridWorld.getGridW()[i][j] + " ");
-            }
-            System.out.print("\n");
         }
     }
 

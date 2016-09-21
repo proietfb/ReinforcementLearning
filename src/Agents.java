@@ -8,24 +8,18 @@ public class Agents {
 
     public static final int maxSignal = 2;
     static int dimGridX, dimGridY;
-
-    private int agentName;
-
-    private int statesCount;
-
-    ArrayList<Integer> previousStates;
     public int[] nodesStatesPositions, nodesPositionsX, nodesPositionsY;
+    public boolean goalReached;
+    ArrayList<Integer> previousStates;
+    Antenna antenna;
+    private int agentName;
+    private int statesCount;
     private double[][] Q;
-
     private int startPositionAgentX, startPositionAgentY, currentPositionX, currentPositionY;
     private int currentState, startState;
     private int signalPower;
     private int nNeighbourDiscovered;
     private int nGoalDiscovered;
-
-    public boolean goalReached;
-
-    Antenna antenna;
 
     public Agents(int agentName, int dimGridX, int dimGridY) {
         this.agentName = agentName;
@@ -57,7 +51,7 @@ public class Agents {
             antenna.discoverLeft(gridWorld.getLinkToAntennaMatrix()[i].getGridRangeAntenna(), getCurrentPositionX(), getCurrentPositionY(), maxSignal, agent);
             antenna.discoverRight(gridWorld.getLinkToAntennaMatrix()[i].getGridRangeAntenna(), getCurrentPositionX(), getCurrentPositionY(), maxSignal, agent);
         }
-        System.out.println(antenna.getNeighbourDiscovered());
+        //System.out.println(antenna.getNeighbourDiscovered());
     }
 
     public int getDimGridX() {
@@ -76,24 +70,48 @@ public class Agents {
         return startPositionAgentX;
     }
 
+    public void setStartPositionAgentX(int startPositionAgentX) {
+        this.startPositionAgentX = startPositionAgentX;
+    }
+
     public int getStartPositionAgentY() {
         return startPositionAgentY;
+    }
+
+    public void setStartPositionAgentY(int startPositionAgentY) {
+        this.startPositionAgentY = startPositionAgentY;
     }
 
     public int getSignalPower() {
         return signalPower;
     }
 
+    public void setSignalPower(int signalPower) {
+        this.signalPower = signalPower;
+    }
+
     public int getCurrentPositionX() {
         return currentPositionX;
+    }
+
+    public void setCurrentPositionX(int currentPositionX) {
+        this.currentPositionX = currentPositionX;
     }
 
     public int getCurrentPositionY() {
         return currentPositionY;
     }
 
+    public void setCurrentPositionY(int currentPositionY) {
+        this.currentPositionY = currentPositionY;
+    }
+
     public int getCurrentState() {
         return currentState;
+    }
+
+    public void setCurrentState(int currentState) {
+        this.currentState = currentState;
     }
 
     public ArrayList<Integer> getPreviousStates() {
@@ -104,28 +122,16 @@ public class Agents {
         return nNeighbourDiscovered;
     }
 
+    public void setnNeighbourDiscovered(int nNeighbourDiscovered) {
+        this.nNeighbourDiscovered = nNeighbourDiscovered;
+    }
+
     public int getnGoalDiscovered() {
         return nGoalDiscovered;
     }
 
-    public void setStartPositionAgentX(int startPositionAgentX) {
-        this.startPositionAgentX = startPositionAgentX;
-    }
-
-    public void setStartPositionAgentY(int startPositionAgentY) {
-        this.startPositionAgentY = startPositionAgentY;
-    }
-
-    public void setCurrentPositionX(int currentPositionX) {
-        this.currentPositionX = currentPositionX;
-    }
-
-    public void setCurrentPositionY(int currentPositionY) {
-        this.currentPositionY = currentPositionY;
-    }
-
-    public void setSignalPower(int signalPower) {
-        this.signalPower = signalPower;
+    public void setnGoalDiscovered(int nGoalDiscovered) {
+        this.nGoalDiscovered = nGoalDiscovered;
     }
 
     public int getStartState() {
@@ -134,18 +140,6 @@ public class Agents {
 
     public void setStartState(int startState) {
         this.startState = startState;
-    }
-
-    public void setCurrentState(int currentState) {
-        this.currentState = currentState;
-    }
-
-    public void setnNeighbourDiscovered(int nNeighbourDiscovered) {
-        this.nNeighbourDiscovered = nNeighbourDiscovered;
-    }
-
-    public void setnGoalDiscovered(int nGoalDiscovered) {
-        this.nGoalDiscovered = nGoalDiscovered;
     }
 
     public int[] getNodesStatesPositions() {
