@@ -5,17 +5,11 @@ import java.util.ArrayList;
  */
 public class States {
 
-    public static int STATE_POSITION = 0;
-    public static int STATE_SIGNALPOWER = 1;
-    public static int STATE_N_NEIGHBOURS = 2;
-    public static int STATE_N_GOALS = 3;
-
-    private ArrayList<ArrayList<Integer>> definePossibleStates;
     ArrayList<Integer> nextStatesList;
+    private ArrayList<ArrayList<Integer>> definePossibleStates;
 
     public States() {
         definePossibleStates = new ArrayList<>();
-
     }
 
     public ArrayList<ArrayList<Integer>> defineStates(GridWorld gridWorld) {

@@ -1,4 +1,3 @@
-
 /**
  * Created by proietfb on 8/3/16.
  */
@@ -19,23 +18,23 @@ public class Walls {
         return wallsStatesPositions;
     }
 
-    public int[] getWallPositionX() {
-        return wallPositionX;
+    public void setWallsStatesPositions(int[] wallsStatesPositions) {
+        this.wallsStatesPositions = wallsStatesPositions;
     }
 
-    public int[] getWallPositionY() {
-        return wallPositionY;
+    public int[] getWallPositionX() {
+        return wallPositionX;
     }
 
     public void setWallPositionX(int[] wallPositionX) {
         this.wallPositionX = wallPositionX;
     }
 
-    public void setWallPositionY(int[] wallPositionY) {
-        this.wallPositionY = wallPositionY;
+    public int[] getWallPositionY() {
+        return wallPositionY;
     }
 
-    public void setWallsStatesPositions(int[] wallsStatesPositions) {
-        this.wallsStatesPositions = wallsStatesPositions;
+    public void setWallPositionY(int[] wallPositionY) {
+        this.wallPositionY = wallPositionY;
     }
 }

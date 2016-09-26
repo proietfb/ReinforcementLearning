@@ -10,10 +10,9 @@ public class GridWorld {
     public static final int WALL_CELL = 1;
     public static final int NODE_CELL = 2;
     public static final int AGENT_CELL = 3;
-
+    public LinkToAntennaMatrix[] linkToAntennaMatrix;
     private int xGrid, yGrid;
     private int[][] gridW, gridValues, copyGridW;
-    public LinkToAntennaMatrix[] linkToAntennaMatrix;
 
     public GridWorld(int xGrid, int yGrid) {
         this.xGrid = xGrid;
@@ -76,7 +75,7 @@ public class GridWorld {
                 agent.setCurrentPositionY(agent.getStartPositionAgentY());
                 agent.setStartState(getGridValues()[agent.getStartPositionAgentX()][agent.getStartPositionAgentY()]);
                 agent.setCurrentState(agent.getStartState());
-                linkToAntennaMatrix[agent.getAgentName()].defineRangeAntennaWorld(gridWorld, walls);
+                linkToAntennaMatrix[agent.getAgentName()].defineRangeAntennaWorld(gridWorld);
                 linkToAntennaMatrix[agent.getAgentName()].gridRangeAntenna[x][y] = agent.getAgentName();
                 for (int i = 1; i <= Agents.maxSignal; i++) {
                     if (x - i >= 0)
@@ -196,7 +195,7 @@ public class GridWorld {
         }
     }
 
-    public void copyRangeAntennaWorld(Agents agent, GridWorld gridWorld){
+    public void copyRangeAntennaWorld(Agents agent, GridWorld gridWorld) {
         for (int i = 0; i < linkToAntennaMatrix[agent.getAgentName()].getGridRangeAntenna().length; i++) {
             for (int j = 0; j < gridWorld.getGridW()[0].length; j++) {
                 linkToAntennaMatrix[agent.getAgentName()].gridRangeAntenna[i][j] = linkToAntennaMatrix[agent.getAgentName()].getGridRangeAntennaCopy()[i][j];
@@ -239,17 +238,13 @@ class LinkToAntennaMatrix {
     }
 
 
-    public void defineRangeAntennaWorld(GridWorld gridWorld, Walls walls) {
+    public void defineRangeAntennaWorld(GridWorld gridWorld) {
         for (int i = 0; i < getGridRangeAntenna().length; i++) {
             for (int j = 0; j < gridWorld.getGridW()[0].length; j++) {
                 gridRangeAntenna[i][j] = gridWorld.ANTENNA;
                 gridRangeAntennaCopy[i][j] = gridWorld.ANTENNA;
             }
         }
-//        for (int i = 0; i < walls.getWallsStatesPositions().length; i++) {
-//            gridRangeAntenna[walls.getWallPositionX()[i]][walls.getWallPositionY()[i]] = gridWorld.WALL_CELL;
-//            gridRangeAntennaCopy[walls.getWallPositionX()[i]][walls.getWallPositionY()[i]] = gridWorld.WALL_CELL;
-//        }
     }
 
     public int[][] getGridRangeAntenna() {

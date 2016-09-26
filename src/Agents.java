@@ -17,9 +17,6 @@ public class Agents {
     private double[][] Q;
     private int startPositionAgentX, startPositionAgentY, currentPositionX, currentPositionY;
     private int currentState, startState;
-    private int signalPower;
-    private int nNeighbourDiscovered;
-    private int nGoalDiscovered;
 
     public Agents(int agentName, int dimGridX, int dimGridY) {
         this.agentName = agentName;
@@ -27,8 +24,6 @@ public class Agents {
         this.dimGridY = dimGridY;
         statesCount = getDimGridX() * getDimGridY();
         previousStates = new ArrayList<>();
-        nNeighbourDiscovered = 0;
-        nGoalDiscovered = 0;
         goalReached = false;
         nodesStatesPositions = new int[Model.nNodes];
         nodesPositionsX = new int[Model.nNodes];
@@ -51,7 +46,6 @@ public class Agents {
             antenna.discoverLeft(gridWorld.getLinkToAntennaMatrix()[i].getGridRangeAntenna(), getCurrentPositionX(), getCurrentPositionY(), maxSignal, agent);
             antenna.discoverRight(gridWorld.getLinkToAntennaMatrix()[i].getGridRangeAntenna(), getCurrentPositionX(), getCurrentPositionY(), maxSignal, agent);
         }
-        //System.out.println(antenna.getNeighbourDiscovered());
     }
 
     public int getDimGridX() {
@@ -82,14 +76,6 @@ public class Agents {
         this.startPositionAgentY = startPositionAgentY;
     }
 
-    public int getSignalPower() {
-        return signalPower;
-    }
-
-    public void setSignalPower(int signalPower) {
-        this.signalPower = signalPower;
-    }
-
     public int getCurrentPositionX() {
         return currentPositionX;
     }
@@ -114,26 +100,6 @@ public class Agents {
         this.currentState = currentState;
     }
 
-    public ArrayList<Integer> getPreviousStates() {
-        return previousStates;
-    }
-
-    public int getnNeighbourDiscovered() {
-        return nNeighbourDiscovered;
-    }
-
-    public void setnNeighbourDiscovered(int nNeighbourDiscovered) {
-        this.nNeighbourDiscovered = nNeighbourDiscovered;
-    }
-
-    public int getnGoalDiscovered() {
-        return nGoalDiscovered;
-    }
-
-    public void setnGoalDiscovered(int nGoalDiscovered) {
-        this.nGoalDiscovered = nGoalDiscovered;
-    }
-
     public int getStartState() {
         return startState;
     }
@@ -144,10 +110,6 @@ public class Agents {
 
     public int[] getNodesStatesPositions() {
         return nodesStatesPositions;
-    }
-
-    public void setNodesStatesPositions(int[] nodesStatesPositions, int position) {
-        this.nodesStatesPositions[position] = nodesStatesPositions[position];
     }
 
     public double[][] getQ() {

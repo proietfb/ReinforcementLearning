@@ -1,17 +1,12 @@
-import java.util.*;
+import java.util.HashSet;
 
 /**
  * Created by proietfb on 8/10/16.
  */
 public class Antenna {
 
-    public static final int UP = 0;
-    public static final int DOWN = 1;
-    public static final int LEFT = 2;
-    public static final int RIGHT = 3;
-
-    private int powerTmp = 0;
     public HashSet<Integer> neighbourDiscovered;
+    private int powerTmp = 0;
 
 
     public Antenna() {

@@ -1,0 +1,157 @@
+@startuml
+class Qlearning
+class Antenna
+class States
+class GridWorld
+class Model
+class Agents
+class Walls
+class Nodes
+class LinkToAntennaMatrix
+
+
+GridWorld <|-- LinkToAntennaMatrix
+Model <|--GridWorld
+Model <|--Agents
+Model <|--Nodes
+Model <|--States
+Model <|--Qlearning
+Model <|--Walls
+Agents<|--Antenna
+class Model{
++xGrid:int
++YGrid: int
++nOfWalls:int
++nAgents: int
++nNodes: int
++agents: Agents[]
++nodes: Nodes[]
++newWorld: GridWorld
++state:States
++walls:Walls
++q: Qlearning
+-nMoves: int[]
+-totalMoves: int[][]
+-times: long[]
+-totalTimes: long[][]
+-meanCoopTimes: long[]
+-meanMoves: double[]
+-meanCoopMoves: double[]
++Model()
++main():void
++runTimes(nTrains:int,typeTest:String,TypePolicy:String,epsilonValue: double): double[]
++runModel(nTrains:int,typeTest:String,typePolicy:String,epsilonValue: double): long[]
+}
+class GridWorld{
++ANTENNA: int static
++FREE_CELL: int static
++WALL_CELL: int static
++NODE_CELL: int static
++AGENT_CELL: int static
+-xGrid: int
+-yGrid: int
+-gridW: int[][]
+-gridValues: int[][]
+-copyGridW: int[][]
++linkToAntennaMatrix: LinkToAntennaMatrix[]
++GridWorld(xGrid:int,yGrid:int)
++defineWorld(): int[][]
++copyWorld(): void
++updateWorld(): void
++defineGridValues(): int[][]
++defineFirstAgentPositions: int[][]
++fillGridWorldAgents(agent:Agents):int[][]
++fillGridWorldWalls(xGridSize:int,yGridSize:int,walls: Walls):int[]
++fillGridWorldNodes(nodes:Nodes):int[][]
++updateRangeAntennaWorld(agent:Agents,
+ oldPositionX:int,oldPositionY:int,newPositionX:int,newPositionY:int): void
++copyRangeAntennaWorld(agent:Agents,gridWorld:GridWorld): void
+}
+class LinkToAntennaMatrix{
++gridRangeAntenna: int[][]
++gridRangeAntennaCopy: int[][]
+LinkToAntennaMatrix()
++defineRangeAntennaWorld(gridWorld GridWorld): void
+}
+class Qlearning{
++df: DecimalFormat
+-alpha: double
+-gamma: double
++model:Model
+-R:int[][]
++Qlearning(agent:Agents,nodes:Nodes[],walls:Walls)
+-initRewardWalls (walls:Walls): void
+-initR(): void
+-initRewardNodes(node:Nodes)
+-maxQ(states:States,agent:Angents,state:int):double
+-checkValueMax(arrayList:ArrayList<Double>): int
+-policyMaxNextVal(states:States,agent:Angents,array:int[]): double[]
+-policyCoopAgentsMaxNextVal(states:States,agent:Angents,agentses:Agents[], array:int[], name:int): double[]
+-policyEpsilonGreedy(states:States,agent:Angents,array:int[],epsilonValue:double):double[]
+-policyEpsilonGreedyCoop(states:States,agent:Angents,agentses:Agents[], array:int[], name:int): double[]
+-policyTruthCoop(tmpCurrentAgent:double[], pos:int,arrayList:ArrayList<Double>,epsilonValue:double):int
++testQlearningCoop(states:States,agent:Angents,agentses:Agents[],gridWorld:GridWorld,typePolicy:String ): void
+-listToArray(ret: int[], state: States,currentState: int): int[]
+-updateCoordinates(gridWorld:GridWorld, agent:Angents, state:int): void
++updateAction(gridWorld:GridWorld, agent:Angents, oldPositionX:int,oldPositionY:int): void
+}
+class Walls{
+-nOfWalls: int
+-wallsStatesPositions:int[]
+-wallPositionX: int[]
+-wallPositionY: int[]
+Walls(nOfWalls: int)
+}
+class Agents{
++maxSignal: int
++dimXgrid:int
++dimYgrid:int
++nodesStatesPositions: int[]
++nodesPositionsX: int[]
++nodesPositionsY: int[]
++goalReached: boolean
++previousStates: ArrayList<Integer>
++antenna: Antenna
+-agentName:int
+-statesCount:int
+-Q
+-startPositionAgentX:int
+-startPositionAgentY:int
+-currentPositionX:int
+-currentPositionY:int
+-currentState:int
+-startState:int
+-signalPower:int
+-nNeighbourDiscovered:int
+-nGoalDiscovered:int
+Agents(agentName: int,dimGridX:int,dimGridY:int)
+-defineQ(): void
++searchNeighbours(gridWorld: GridWorld, agents: Agents): void
+}
+class Antenna{
++UP:int
++DOWN:int
++LEFT:int
++RIGHT:int
++neighbourDiscovered:HashSet<Integer>
+-powerTmp: int
+Antenna()
++discoverUP(grid: int[][],agentPositionX:int,agentPositionY:int,power:int,agent:Agents) void
++discoverDown(grid: int[][],agentPositionX:int,agentPositionY:int,power:int,agent:Agents) void
++discoverLeft(grid: int[][],agentPositionX:int,agentPositionY:int,power:int,agent:Agents) void
++discoverRight(grid: int[][],agentPositionX:int,agentPositionY:int,power:int,agent:Agents) void
+}
+class States {
+-definePossibleStates: ArrayList<ArrayList<Integer>>
++nextStatesList: ArrayList<Integer>
+States()
++defineStates(gridWorld GridWorld): ArrayList<ArrayList<Integer>>
+-nextState(i: int,j: int, gridWorld GridWorld): ArrayList<Integer>
+}
+class Nodes{
+-positionNodeX: int
+-positionNodeY: int
+-nodeCurrentState: int
+Nodes()
+}
+@enduml
