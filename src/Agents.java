@@ -123,4 +123,8 @@ public class Agents {
     public int getStatesCount() {
         return statesCount;
     }
+
+    public ArrayList<Integer> getPreviousStates() {
+        return previousStates;
+    }
 }
